@@ -3,13 +3,28 @@ import { useEffect } from 'react';
 import OfferList from '../OfferList/OfferList';
 import CommentForm from '../CommentForm/CommentForm';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
+import Map from '../Map/Map';
+import ReviewList from '../ReviewList/ReviewList';
 import { Offer } from '../../mocks/offers';
+import type { Review } from '../ReviewItem/ReviewItem';
 
 type OfferPageProps = {
   offers: Offer[];
 };
 
 function OfferPage({ offers }: OfferPageProps) {
+  const reviews: Review[] = [
+    {
+      id: 1,
+      userName: 'Max',
+      userAvatarUrl: 'img/avatar-max.jpg',
+      rating: 4,
+      comment: 'A quiet cozy and picturesque that hides behind a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
+      date: '2019-04-24',
+      displayDate: 'April 2019',
+    },
+  ];
+
   const { id } = useParams();
   const offerId = Number(id);
   const currentOffer = offers.find((offerItem) => offerItem.id === offerId);
@@ -24,6 +39,7 @@ function OfferPage({ offers }: OfferPageProps) {
   }
 
   const nearOffers = offers.filter((offerItem) => offerItem.id !== currentOffer.id && offerItem.city.name === currentOffer.city.name).slice(0, 3);
+  const nearbyOffersForMap = [currentOffer, ...nearOffers];
   const ratingWidth = `${currentOffer.rating * 20}%`;
   const imageCounters: Record<string, number> = {};
   const galleryImages = currentOffer.images.map((image) => {
@@ -149,36 +165,17 @@ function OfferPage({ offers }: OfferPageProps) {
                 </div>
               </div>
               <section className="offer__reviews reviews">
-                <h2 className="reviews__title">Reviews &middot; <span className="reviews__amount">1</span></h2>
-                <ul className="reviews__list">
-                  <li className="reviews__item">
-                    <div className="reviews__user user">
-                      <div className="reviews__avatar-wrapper user__avatar-wrapper">
-                        <img className="reviews__avatar user__avatar" src="img/avatar-max.jpg" width="54" height="54" alt="Reviews avatar" />
-                      </div>
-                      <span className="reviews__user-name">
-                        Max
-                      </span>
-                    </div>
-                    <div className="reviews__info">
-                      <div className="reviews__rating rating">
-                        <div className="reviews__stars rating__stars">
-                          <span style={{width: '80%'}}></span>
-                          <span className="visually-hidden">Rating</span>
-                        </div>
-                      </div>
-                      <p className="reviews__text">
-                        A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.
-                      </p>
-                      <time className="reviews__time" dateTime="2019-04-24">April 2019</time>
-                    </div>
-                  </li>
-                </ul>
+                <h2 className="reviews__title">
+                  Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
+                </h2>
+                <ReviewList reviews={reviews} />
                 <CommentForm />
               </section>
             </div>
           </div>
-          <section className="offer__map map"></section>
+          <section className="offer__map map">
+            <Map city={currentOffer.city} offers={nearbyOffersForMap} activeOfferId={currentOffer.id} />
+          </section>
         </section>
         <div className="container">
           <section className="near-places places">
