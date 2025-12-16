@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
-import { Offer } from '../../mocks/offers';
+import { getOffers } from '../../store/selectors';
+import type { Offer } from '../../mocks/offers';
 
-type FavoritesPageProps = {
-  offers: Offer[];
-};
-
-function FavoritesPage({ offers }: FavoritesPageProps) {
+function FavoritesPage() {
+  const offers = useSelector(getOffers);
   const favoriteOffers = offers.filter((offer) => offer.isFavorite);
 
   if (favoriteOffers.length === 0) {
