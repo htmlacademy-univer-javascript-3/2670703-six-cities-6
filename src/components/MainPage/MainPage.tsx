@@ -1,20 +1,27 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import Map from '../Map/Map';
-import { Offer } from '../../mocks/offers';
+import CityList from '../CityList/CityList';
+import { changeCity } from '../../store/action';
+import { getCity, getOffers, getOffersByCity } from '../../store/selectors';
 
-type MainPageProps = {
-  offers: Offer[];
-};
+const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
 
-function MainPage({ offers }: MainPageProps) {
+function MainPage() {
+  const dispatch = useDispatch();
   const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
   const [isSortingOpen, setIsSortingOpen] = useState(false);
 
-  const activeCityName = 'Amsterdam';
-  const cityOffers = offers.filter((offer) => offer.city.name === activeCityName);
-  const city = cityOffers[0]?.city ?? offers[0].city;
+  const activeCityName = useSelector(getCity);
+  const offers = useSelector(getOffers);
+  const cityOffers = useSelector(getOffersByCity);
+  const city = cityOffers[0]?.city ?? offers[0]?.city;
+
+  const handleCityChange = (cityName: string) => {
+    dispatch(changeCity(cityName));
+  };
 
   const handleOfferHover = (offerId: number | null) => {
     setActiveOfferId(offerId);
@@ -62,46 +69,13 @@ function MainPage({ offers }: MainPageProps) {
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active" href="#">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
+          <CityList cities={CITIES} activeCity={activeCityName} onCityChange={handleCityChange} />
         </div>
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{cityOffers.length} places to stay in Amsterdam</b>
+              <b className="places__found">{cityOffers.length} places to stay in {activeCityName}</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0} onClick={handleSortingToggle}>

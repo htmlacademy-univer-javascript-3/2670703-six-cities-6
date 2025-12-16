@@ -86,5 +86,3 @@ function Map({ city, offers, activeOfferId }: MapProps) {
 }
 
 export default Map;
-
-

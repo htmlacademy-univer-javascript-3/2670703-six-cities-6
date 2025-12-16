@@ -1,18 +1,16 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import CommentForm from '../CommentForm/CommentForm';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Map from '../Map/Map';
 import ReviewList from '../ReviewList/ReviewList';
-import { Offer } from '../../mocks/offers';
 import type { Review } from '../ReviewItem/ReviewItem';
+import { getOffers } from '../../store/selectors';
 
-type OfferPageProps = {
-  offers: Offer[];
-};
-
-function OfferPage({ offers }: OfferPageProps) {
+function OfferPage() {
+  const offers = useSelector(getOffers);
   const reviews: Review[] = [
     {
       id: 1,
