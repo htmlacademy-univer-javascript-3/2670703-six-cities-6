@@ -1,0 +1,90 @@
+import { useEffect, useRef } from 'react';
+import L, { Icon, LayerGroup, Map as LeafletMap } from 'leaflet';
+import { City, Offer } from '../../mocks/offers';
+
+type MapProps = {
+  city: City;
+  offers: Offer[];
+  activeOfferId?: number | null;
+};
+
+const DEFAULT_ZOOM = 12;
+
+const defaultCustomIcon = new Icon({
+  iconUrl: 'img/pin.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+const activeCustomIcon = new Icon({
+  iconUrl: 'img/pin-active.svg',
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+function Map({ city, offers, activeOfferId }: MapProps) {
+  const mapRef = useRef<LeafletMap | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (mapContainerRef.current !== null && mapRef.current === null) {
+      mapRef.current = L.map(mapContainerRef.current, {
+        center: {
+          lat: city.location.latitude,
+          lng: city.location.longitude,
+        },
+        zoom: city.location.zoom ?? DEFAULT_ZOOM,
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(mapRef.current);
+    }
+  }, [city]);
+
+  useEffect(() => {
+    if (mapRef.current === null) {
+      return;
+    }
+
+    const markersLayer: LayerGroup = L.layerGroup().addTo(mapRef.current);
+
+    offers.forEach((offer) => {
+      const isActive = offer.id === activeOfferId;
+
+      L.marker(
+        {
+          lat: offer.location.latitude,
+          lng: offer.location.longitude,
+        },
+        {
+          icon: isActive ? activeCustomIcon : defaultCustomIcon,
+        }
+      ).addTo(markersLayer);
+    });
+
+    return () => {
+      mapRef.current?.removeLayer(markersLayer);
+    };
+  }, [offers, activeOfferId]);
+
+  useEffect(() => {
+    if (mapRef.current === null) {
+      return;
+    }
+
+    mapRef.current.setView(
+      {
+        lat: city.location.latitude,
+        lng: city.location.longitude,
+      },
+      city.location.zoom ?? DEFAULT_ZOOM
+    );
+  }, [city]);
+
+  return <div ref={mapContainerRef} style={{ height: '100%' }} />;
+}
+
+export default Map;
+
+

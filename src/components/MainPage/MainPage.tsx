@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import OfferList from '../OfferList/OfferList';
+import Map from '../Map/Map';
 import { Offer } from '../../mocks/offers';
 
 type MainPageProps = {
@@ -10,6 +11,10 @@ type MainPageProps = {
 function MainPage({ offers }: MainPageProps) {
   const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
   const [isSortingOpen, setIsSortingOpen] = useState(false);
+
+  const activeCityName = 'Amsterdam';
+  const cityOffers = offers.filter((offer) => offer.city.name === activeCityName);
+  const city = cityOffers[0]?.city ?? offers[0].city;
 
   const handleOfferHover = (offerId: number | null) => {
     setActiveOfferId(offerId);
@@ -96,7 +101,7 @@ function MainPage({ offers }: MainPageProps) {
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{offers.length} places to stay in Amsterdam</b>
+              <b className="places__found">{cityOffers.length} places to stay in Amsterdam</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0} onClick={handleSortingToggle}>
@@ -112,10 +117,12 @@ function MainPage({ offers }: MainPageProps) {
                   <li className="places__option" tabIndex={0} onClick={handleSortingOptionClick}>Top rated first</li>
                 </ul>
               </form>
-              <OfferList offers={offers} onOfferHover={handleOfferHover} />
+              <OfferList offers={cityOffers} onOfferHover={handleOfferHover} />
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map" data-active-offer={activeOfferId ?? ''}></section>
+              <section className="cities__map map" data-active-offer={activeOfferId ?? ''}>
+                <Map city={city} offers={cityOffers} activeOfferId={activeOfferId} />
+              </section>
             </div>
           </div>
         </div>
