@@ -1,10 +1,17 @@
-import { ChangeEvent, FormEvent, Fragment, useState } from 'react';
+import { ChangeEvent, FormEvent, Fragment, useState, useEffect, useRef } from 'react';
+import type { CommentSubmission } from '../../types/offer';
 
-function CommentForm() {
+type CommentFormProps = {
+  onSubmit: (comment: CommentSubmission) => void;
+  isSubmitting?: boolean;
+};
+
+function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
   const [rating, setRating] = useState('');
   const [comment, setComment] = useState('');
+  const previousSubmittingRef = useRef(isSubmitting);
   const ratingOptions = [5, 4, 3, 2, 1];
-  const isSubmitDisabled = rating === '' || comment.length < 50;
+  const isSubmitDisabled = rating === '' || comment.length < 50 || isSubmitting;
   const ratingTitles: Record<number, string> = {
     5: 'perfect',
     4: 'good',
@@ -12,6 +19,14 @@ function CommentForm() {
     2: 'badly',
     1: 'terribly',
   };
+
+  useEffect(() => {
+    if (previousSubmittingRef.current && !isSubmitting) {
+      setRating('');
+      setComment('');
+    }
+    previousSubmittingRef.current = isSubmitting;
+  }, [isSubmitting]);
 
   const handleRatingChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setRating(evt.target.value);
@@ -23,6 +38,12 @@ function CommentForm() {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    if (!isSubmitDisabled) {
+      onSubmit({
+        rating: Number(rating),
+        comment: comment.trim(),
+      });
+    }
   };
 
   return (
@@ -61,7 +82,9 @@ function CommentForm() {
         <p className="reviews__help">
           To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
-        <button className="reviews__submit form__submit button" type="submit" disabled={isSubmitDisabled}>Submit</button>
+        <button className="reviews__submit form__submit button" type="submit" disabled={isSubmitDisabled}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
       </div>
     </form>
   );
