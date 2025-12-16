@@ -4,11 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import App from './components/App/App';
-import { offers } from './mocks/offers';
 import { store } from './store';
-import { loadOffers } from './store/action';
-
-store.dispatch(loadOffers(offers));
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

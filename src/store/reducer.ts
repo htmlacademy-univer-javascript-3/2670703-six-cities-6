@@ -1,13 +1,15 @@
-import { createReducer, type PayloadAction } from '@reduxjs/toolkit';
-import type { Offer } from '../mocks/offers';
+import { createReducer, isAnyOf, type PayloadAction } from '@reduxjs/toolkit';
+import type { Offer } from '../types/offer';
 import { SortingType } from '../const';
-import { changeCity, changeSortingType, loadOffers, setHoveredOfferId } from './action';
+import { changeCity, changeSortingType, fetchOffersAction, loadOffers, setHoveredOfferId } from './action';
 
 export type OffersState = {
   city: string;
   offers: Offer[];
   sortingType: SortingType;
-  hoveredOfferId: number | null;
+  hoveredOfferId: string | null;
+  isOffersLoading: boolean;
+  hasOffersLoadingError: boolean;
 };
 
 const initialState: OffersState = {
@@ -15,6 +17,8 @@ const initialState: OffersState = {
   offers: [],
   sortingType: SortingType.Popular,
   hoveredOfferId: null,
+  isOffersLoading: true,
+  hasOffersLoadingError: false,
 };
 
 export const offersData = createReducer(initialState, (builder) => {
@@ -28,7 +32,19 @@ export const offersData = createReducer(initialState, (builder) => {
     .addCase(changeSortingType, (state, action: PayloadAction<SortingType>) => {
       state.sortingType = action.payload;
     })
-    .addCase(setHoveredOfferId, (state, action: PayloadAction<number | null>) => {
+    .addCase(setHoveredOfferId, (state, action: PayloadAction<string | null>) => {
       state.hoveredOfferId = action.payload;
+    })
+    .addMatcher(isAnyOf(fetchOffersAction.pending), (state) => {
+      state.isOffersLoading = true;
+      state.hasOffersLoadingError = false;
+    })
+    .addMatcher(isAnyOf(fetchOffersAction.fulfilled), (state, action: PayloadAction<Offer[]>) => {
+      state.isOffersLoading = false;
+      state.offers = action.payload;
+    })
+    .addMatcher(isAnyOf(fetchOffersAction.rejected), (state) => {
+      state.isOffersLoading = false;
+      state.hasOffersLoadingError = true;
     });
 });

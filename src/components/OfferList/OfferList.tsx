@@ -1,10 +1,10 @@
 import OfferCard from '../OfferCard/OfferCard';
-import { Offer } from '../../mocks/offers';
+import type { Offer } from '../../types/offer';
 
 type OfferListProps = {
   offers: Offer[];
   block?: 'cities' | 'favorites' | 'near-places';
-  onOfferHover?: (offerId: number | null) => void;
+  onOfferHover?: (offerId: string | null) => void;
   className?: string;
 };
 
@@ -16,7 +16,7 @@ function OfferList({ offers, block = 'cities', onOfferHover, className }: OfferL
   };
   const containerClassName = className ?? defaultContainerClassNames[block];
 
-  const handleMouseEnter = (offerId: number) => {
+  const handleMouseEnter = (offerId: string) => {
     if (onOfferHover) {
       onOfferHover(offerId);
     }

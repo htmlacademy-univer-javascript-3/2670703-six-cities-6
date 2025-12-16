@@ -13,3 +13,7 @@ export const getOffersByCity = (state: State) => {
 export const getSortingType = (state: State) => state.sortingType;
 
 export const getHoveredOfferId = (state: State) => state.hoveredOfferId;
+
+export const getIsOffersLoading = (state: State) => state.isOffersLoading;
+
+export const getHasOffersLoadingError = (state: State) => state.hasOffersLoadingError;

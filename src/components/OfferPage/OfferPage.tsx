@@ -24,13 +24,12 @@ function OfferPage() {
   ];
 
   const { id } = useParams();
-  const offerId = Number(id);
-  const currentOffer = offers.find((offerItem) => offerItem.id === offerId);
+  const currentOffer = offers.find((offerItem) => offerItem.id === id);
   const favoritesCount = offers.filter((offerItem) => offerItem.isFavorite).length;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [offerId]);
+  }, [id]);
 
   if (!currentOffer) {
     return <NotFoundPage />;
@@ -40,7 +39,7 @@ function OfferPage() {
   const nearbyOffersForMap = [currentOffer, ...nearOffers];
   const ratingWidth = `${currentOffer.rating * 20}%`;
   const imageCounters: Record<string, number> = {};
-  const galleryImages = currentOffer.images.map((image) => {
+  const galleryImages = (currentOffer.images ?? []).map((image) => {
     const nextCount = (imageCounters[image] ?? 0) + 1;
     imageCounters[image] = nextCount;
     return {
@@ -120,12 +119,16 @@ function OfferPage() {
                 <li className="offer__feature offer__feature--entire">
                   {currentOffer.type}
                 </li>
-                <li className="offer__feature offer__feature--bedrooms">
-                  {currentOffer.bedrooms} Bedrooms
-                </li>
-                <li className="offer__feature offer__feature--adults">
-                  Max {currentOffer.maxAdults} adults
-                </li>
+                {currentOffer.bedrooms !== undefined && (
+                  <li className="offer__feature offer__feature--bedrooms">
+                    {currentOffer.bedrooms} Bedrooms
+                  </li>
+                )}
+                {currentOffer.maxAdults !== undefined && (
+                  <li className="offer__feature offer__feature--adults">
+                    Max {currentOffer.maxAdults} adults
+                  </li>
+                )}
               </ul>
               <div className="offer__price">
                 <b className="offer__price-value">&euro;{currentOffer.price}</b>
@@ -134,34 +137,38 @@ function OfferPage() {
               <div className="offer__inside">
                 <h2 className="offer__inside-title">What&apos;s inside</h2>
                 <ul className="offer__inside-list">
-                  {currentOffer.goods.map((good) => (
+                  {(currentOffer.goods ?? []).map((good) => (
                     <li className="offer__inside-item" key={good}>
                       {good}
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="offer__host">
-                <h2 className="offer__host-title">Meet the host</h2>
-                <div className="offer__host-user user">
-                  <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
-                    <img className="offer__avatar user__avatar" src={currentOffer.host.avatarUrl} width="74" height="74" alt="Host avatar" />
-                  </div>
-                  <span className="offer__user-name">
-                    {currentOffer.host.name}
-                  </span>
-                  {currentOffer.host.isPro && (
-                    <span className="offer__user-status">
-                      Pro
+              {currentOffer.host && (
+                <div className="offer__host">
+                  <h2 className="offer__host-title">Meet the host</h2>
+                  <div className="offer__host-user user">
+                    <div className={`offer__avatar-wrapper ${currentOffer.host.isPro ? 'offer__avatar-wrapper--pro' : ''} user__avatar-wrapper`}>
+                      <img className="offer__avatar user__avatar" src={currentOffer.host.avatarUrl} width="74" height="74" alt="Host avatar" />
+                    </div>
+                    <span className="offer__user-name">
+                      {currentOffer.host.name}
                     </span>
+                    {currentOffer.host.isPro && (
+                      <span className="offer__user-status">
+                        Pro
+                      </span>
+                    )}
+                  </div>
+                  {currentOffer.description && (
+                    <div className="offer__description">
+                      <p className="offer__text">
+                        {currentOffer.description}
+                      </p>
+                    </div>
                   )}
                 </div>
-                <div className="offer__description">
-                  <p className="offer__text">
-                    {currentOffer.description}
-                  </p>
-                </div>
-              </div>
+              )}
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
                   Reviews &middot; <span className="reviews__amount">{reviews.length}</span>

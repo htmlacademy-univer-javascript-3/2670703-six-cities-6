@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 import L, { Icon, LayerGroup, Map as LeafletMap } from 'leaflet';
-import { City, Offer } from '../../mocks/offers';
+import type { City, Offer } from '../../types/offer';
 
 type MapProps = {
   city: City;
   offers: Offer[];
-  activeOfferId?: number | null;
+  activeOfferId?: string | null;
 };
 
 const DEFAULT_ZOOM = 12;

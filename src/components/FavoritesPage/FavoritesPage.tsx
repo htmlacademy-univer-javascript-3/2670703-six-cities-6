@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
 import { getOffers } from '../../store/selectors';
-import type { Offer } from '../../mocks/offers';
+import type { Offer } from '../../types/offer';
 
 function FavoritesPage() {
   const offers = useSelector(getOffers);
