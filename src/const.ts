@@ -4,3 +4,9 @@ export enum SortingType {
   PriceHighToLow = 'Price: high to low',
   TopRatedFirst = 'Top rated first',
 }
+
+export enum AuthorizationStatus {
+  Auth = 'Auth',
+  NoAuth = 'NoAuth',
+  Unknown = 'Unknown',
+}
