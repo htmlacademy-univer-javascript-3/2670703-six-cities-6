@@ -9,3 +9,7 @@ export const getOffersByCity = (state: State) => {
 
   return state.offers.filter((offer) => offer.city.name === activeCityName);
 };
+
+export const getSortingType = (state: State) => state.sortingType;
+
+export const getHoveredOfferId = (state: State) => state.hoveredOfferId;

@@ -1,22 +1,23 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import OfferList from '../OfferList/OfferList';
 import Map from '../Map/Map';
 import CityList from '../CityList/CityList';
-import { changeCity } from '../../store/action';
-import { getCity, getOffers, getOffersByCity } from '../../store/selectors';
+import SortingOptions from '../SortingOptions/SortingOptions';
+import { changeCity, changeSortingType, setHoveredOfferId } from '../../store/action';
+import { getCity, getHoveredOfferId, getOffers, getOffersByCity, getSortingType } from '../../store/selectors';
+import { SortingType } from '../../const';
 
 const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
 
 function MainPage() {
   const dispatch = useDispatch();
-  const [activeOfferId, setActiveOfferId] = useState<number | null>(null);
-  const [isSortingOpen, setIsSortingOpen] = useState(false);
 
   const activeCityName = useSelector(getCity);
   const offers = useSelector(getOffers);
   const cityOffers = useSelector(getOffersByCity);
+  const sortingType = useSelector(getSortingType);
+  const activeOfferId = useSelector(getHoveredOfferId);
   const city = cityOffers[0]?.city ?? offers[0]?.city;
 
   const handleCityChange = (cityName: string) => {
@@ -24,16 +25,30 @@ function MainPage() {
   };
 
   const handleOfferHover = (offerId: number | null) => {
-    setActiveOfferId(offerId);
+    dispatch(setHoveredOfferId(offerId));
   };
 
-  const handleSortingToggle = () => {
-    setIsSortingOpen((prevState) => !prevState);
+  const handleSortingTypeChange = (nextSortingType: SortingType) => {
+    dispatch(changeSortingType(nextSortingType));
   };
 
-  const handleSortingOptionClick = () => {
-    setIsSortingOpen(false);
+  const getSortedOffers = (offersToSort: typeof cityOffers, currentSortingType: SortingType) => {
+    const sortedOffers = [...offersToSort];
+
+    switch (currentSortingType) {
+      case SortingType.PriceLowToHigh:
+        return sortedOffers.sort((firstOffer, secondOffer) => firstOffer.price - secondOffer.price);
+      case SortingType.PriceHighToLow:
+        return sortedOffers.sort((firstOffer, secondOffer) => secondOffer.price - firstOffer.price);
+      case SortingType.TopRatedFirst:
+        return sortedOffers.sort((firstOffer, secondOffer) => secondOffer.rating - firstOffer.rating);
+      case SortingType.Popular:
+      default:
+        return sortedOffers;
+    }
   };
+
+  const sortedCityOffers = getSortedOffers(cityOffers, sortingType);
 
   return (
     <div className="page page--gray page--main">
@@ -76,26 +91,12 @@ function MainPage() {
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{cityOffers.length} places to stay in {activeCityName}</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0} onClick={handleSortingToggle}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className={`places__options places__options--custom ${isSortingOpen ? 'places__options--opened' : ''}`}>
-                  <li className="places__option places__option--active" tabIndex={0} onClick={handleSortingOptionClick}>Popular</li>
-                  <li className="places__option" tabIndex={0} onClick={handleSortingOptionClick}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0} onClick={handleSortingOptionClick}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0} onClick={handleSortingOptionClick}>Top rated first</li>
-                </ul>
-              </form>
-              <OfferList offers={cityOffers} onOfferHover={handleOfferHover} />
+              <SortingOptions currentSortingType={sortingType} onSortingTypeChange={handleSortingTypeChange} />
+              <OfferList offers={sortedCityOffers} onOfferHover={handleOfferHover} />
             </section>
             <div className="cities__right-section">
               <section className="cities__map map" data-active-offer={activeOfferId ?? ''}>
-                <Map city={city} offers={cityOffers} activeOfferId={activeOfferId} />
+                <Map city={city} offers={sortedCityOffers} activeOfferId={activeOfferId} />
               </section>
             </div>
           </div>
