@@ -6,7 +6,7 @@ type PrivateRouteProps = {
 };
 
 function PrivateRoute({ children }: PrivateRouteProps) {
-  const isAuthorized = false;
+  const isAuthorized = true;
 
   if (!isAuthorized) {
     return <Navigate to="/login" />;

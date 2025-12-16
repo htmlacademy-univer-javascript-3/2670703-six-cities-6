@@ -1,37 +1,54 @@
+import { Link } from 'react-router-dom';
+import { Offer } from '../../mocks/offers';
+
 type OfferCardProps = {
-  title: string;
-  price: number;
-  type: string;
-  image: string;
-  isPremium?: boolean;
-  isFavorite?: boolean;
-  rating: number;
+  offer: Offer;
+  block?: 'cities' | 'favorites' | 'near-places';
+  onMouseEnter?: (offerId: number) => void;
+  onMouseLeave?: () => void;
 };
 
-function OfferCard({
-  title,
-  price,
-  type,
-  image,
-  isPremium = false,
-  isFavorite = false,
-  rating
-}: OfferCardProps) {
+function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: OfferCardProps) {
+  const { id, title, price, type, previewImage, isPremium, isFavorite, rating } = offer;
   const ratingWidth = `${rating * 20}%`;
+  const blockCardClasses: Record<NonNullable<OfferCardProps['block']>, string> = {
+    cities: 'cities__card',
+    favorites: 'favorites__card',
+    'near-places': 'near-places__card',
+  };
+  const blockImageWrapperClasses: Record<NonNullable<OfferCardProps['block']>, string> = {
+    cities: 'cities__image-wrapper',
+    favorites: 'favorites__image-wrapper',
+    'near-places': 'near-places__image-wrapper',
+  };
+  const cardClassName = `${blockCardClasses[block]} place-card`;
+  const imageWrapperClassName = `${blockImageWrapperClasses[block]} place-card__image-wrapper`;
+  const infoClassName = block === 'favorites' ? 'favorites__card-info place-card__info' : 'place-card__info';
+  const imageSize = block === 'favorites' ? { width: 150, height: 110 } : { width: 260, height: 200 };
+
+  const handleMouseEnter = () => {
+    if (onMouseEnter) {
+      onMouseEnter(id);
+    }
+  };
 
   return (
-    <article className="cities__card place-card">
+    <article
+      className={cardClassName}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
-      <div className="cities__image-wrapper place-card__image-wrapper">
-        <a href="#">
-          <img className="place-card__image" src={image} width="260" height="200" alt="Place image" />
-        </a>
+      <div className={imageWrapperClassName}>
+        <Link to={`/offer/${id}`}>
+          <img className="place-card__image" src={previewImage} width={imageSize.width} height={imageSize.height} alt={title} />
+        </Link>
       </div>
-      <div className="place-card__info">
+      <div className={infoClassName}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
@@ -51,7 +68,7 @@ function OfferCard({
           </div>
         </div>
         <h2 className="place-card__name">
-          <a href="#">{title}</a>
+          <Link to={`/offer/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
