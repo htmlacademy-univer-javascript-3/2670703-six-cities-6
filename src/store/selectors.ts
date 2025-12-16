@@ -1,4 +1,5 @@
 import type { State } from './index';
+import { AuthorizationStatus } from '../const';
 
 export const getCity = (state: State): string => state.city;
 
@@ -17,3 +18,7 @@ export const getHoveredOfferId = (state: State) => state.hoveredOfferId;
 export const getIsOffersLoading = (state: State) => state.isOffersLoading;
 
 export const getHasOffersLoadingError = (state: State) => state.hasOffersLoadingError;
+
+export const getAuthorizationStatus = (state: State): AuthorizationStatus => state.authorizationStatus;
+
+export const getUserData = (state: State) => state.userData;

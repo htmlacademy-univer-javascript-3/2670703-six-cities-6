@@ -1,8 +1,8 @@
-import axios, { type AxiosInstance } from 'axios';
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
 
 const BACKEND_URL = 'https://14.design.htmlacademy.pro/six-cities';
 const REQUEST_TIMEOUT = 5000;
-const AUTH_TOKEN_KEY = 'six-cities-token';
+export const AUTH_TOKEN_KEY = 'six-cities-token';
 const AUTH_HEADER_NAME = 'X-Token';
 
 export const createApi = (): AxiosInstance => {
@@ -11,7 +11,7 @@ export const createApi = (): AxiosInstance => {
     timeout: REQUEST_TIMEOUT,
   });
 
-  api.interceptors.request.use((config) => {
+  api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem(AUTH_TOKEN_KEY);
 
     if (token) {

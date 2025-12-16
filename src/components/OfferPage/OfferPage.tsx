@@ -1,16 +1,22 @@
 import { Link, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import type { AppDispatch } from '../../store';
 import OfferList from '../OfferList/OfferList';
 import CommentForm from '../CommentForm/CommentForm';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Map from '../Map/Map';
 import ReviewList from '../ReviewList/ReviewList';
 import type { Review } from '../ReviewItem/ReviewItem';
-import { getOffers } from '../../store/selectors';
+import { getOffers, getAuthorizationStatus, getUserData } from '../../store/selectors';
+import { logoutAction } from '../../store/action';
+import { AuthorizationStatus } from '../../const';
 
 function OfferPage() {
+  const dispatch = useDispatch<AppDispatch>();
   const offers = useSelector(getOffers);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const userData = useSelector(getUserData);
   const reviews: Review[] = [
     {
       id: 1,
@@ -26,6 +32,10 @@ function OfferPage() {
   const { id } = useParams();
   const currentOffer = offers.find((offerItem) => offerItem.id === id);
   const favoritesCount = offers.filter((offerItem) => offerItem.isFavorite).length;
+
+  const handleLogoutClick = () => {
+    dispatch(logoutAction());
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -59,21 +69,39 @@ function OfferPage() {
               </Link>
             </div>
             <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">{favoritesCount}</span>
-                  </Link>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
+              {authorizationStatus === AuthorizationStatus.Auth && userData ? (
+                <ul className="header__nav-list">
+                  <li className="header__nav-item user">
+                    <Link className="header__nav-link header__nav-link--profile" to="/favorites">
+                      <div className="header__avatar-wrapper user__avatar-wrapper">
+                        <img className="header__avatar user__avatar" src={userData.avatarUrl} width="20" height="20" alt={userData.name} />
+                      </div>
+                      <span className="header__user-name user__name">{userData.email}</span>
+                      <span className="header__favorite-count">{favoritesCount}</span>
+                    </Link>
+                  </li>
+                  <li className="header__nav-item">
+                    <a
+                      className="header__nav-link"
+                      href="#"
+                      onClick={(evt) => {
+                        evt.preventDefault();
+                        handleLogoutClick();
+                      }}
+                    >
+                      <span className="header__signout">Sign out</span>
+                    </a>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="header__nav-list">
+                  <li className="header__nav-item">
+                    <Link className="header__nav-link" to="/login">
+                      <span className="header__login">Sign in</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </nav>
           </div>
         </div>

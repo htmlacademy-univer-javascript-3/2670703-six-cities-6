@@ -7,9 +7,9 @@ import Map from '../Map/Map';
 import CityList from '../CityList/CityList';
 import SortingOptions from '../SortingOptions/SortingOptions';
 import Spinner from '../Spinner/Spinner';
-import { changeCity, changeSortingType, fetchOffersAction, setHoveredOfferId } from '../../store/action';
-import { getCity, getHasOffersLoadingError, getHoveredOfferId, getIsOffersLoading, getOffers, getOffersByCity, getSortingType } from '../../store/selectors';
-import { SortingType } from '../../const';
+import { changeCity, changeSortingType, fetchOffersAction, setHoveredOfferId, logoutAction } from '../../store/action';
+import { getCity, getHasOffersLoadingError, getHoveredOfferId, getIsOffersLoading, getOffers, getOffersByCity, getSortingType, getAuthorizationStatus, getUserData } from '../../store/selectors';
+import { SortingType, AuthorizationStatus } from '../../const';
 
 const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
 
@@ -27,6 +27,9 @@ function MainPage() {
   const activeOfferId = useSelector(getHoveredOfferId);
   const isOffersLoading = useSelector(getIsOffersLoading);
   const hasOffersLoadingError = useSelector(getHasOffersLoadingError);
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const userData = useSelector(getUserData);
+  const favoriteOffersCount = offers.filter((offer) => offer.isFavorite).length;
   const city = cityOffers[0]?.city ?? offers[0]?.city;
 
   const handleCityChange = (cityName: string) => {
@@ -39,6 +42,10 @@ function MainPage() {
 
   const handleSortingTypeChange = (nextSortingType: SortingType) => {
     dispatch(changeSortingType(nextSortingType));
+  };
+
+  const handleLogoutClick = () => {
+    dispatch(logoutAction());
   };
 
   const getSortedOffers = (offersToSort: typeof cityOffers, currentSortingType: SortingType) => {
@@ -70,21 +77,39 @@ function MainPage() {
               </Link>
             </div>
             <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">3</span>
-                  </Link>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
+              {authorizationStatus === AuthorizationStatus.Auth && userData ? (
+                <ul className="header__nav-list">
+                  <li className="header__nav-item user">
+                    <Link className="header__nav-link header__nav-link--profile" to="/favorites">
+                      <div className="header__avatar-wrapper user__avatar-wrapper">
+                        <img className="header__avatar user__avatar" src={userData.avatarUrl} width="20" height="20" alt={userData.name} />
+                      </div>
+                      <span className="header__user-name user__name">{userData.email}</span>
+                      <span className="header__favorite-count">{favoriteOffersCount}</span>
+                    </Link>
+                  </li>
+                  <li className="header__nav-item">
+                    <a
+                      className="header__nav-link"
+                      href="#"
+                      onClick={(evt) => {
+                        evt.preventDefault();
+                        handleLogoutClick();
+                      }}
+                    >
+                      <span className="header__signout">Sign out</span>
+                    </a>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="header__nav-list">
+                  <li className="header__nav-item">
+                    <Link className="header__nav-link" to="/login">
+                      <span className="header__login">Sign in</span>
+                    </Link>
+                  </li>
+                </ul>
+              )}
             </nav>
           </div>
         </div>
