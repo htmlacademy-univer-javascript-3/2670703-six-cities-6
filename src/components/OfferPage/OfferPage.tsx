@@ -7,46 +7,61 @@ import CommentForm from '../CommentForm/CommentForm';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Map from '../Map/Map';
 import ReviewList from '../ReviewList/ReviewList';
-import type { Review } from '../ReviewItem/ReviewItem';
-import { getOffers, getAuthorizationStatus, getUserData } from '../../store/selectors';
-import { logoutAction } from '../../store/action';
+import Spinner from '../Spinner/Spinner';
+import { getOffers, getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting } from '../../store/selectors';
+import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction } from '../../store/action';
 import { AuthorizationStatus } from '../../const';
+import type { CommentSubmission } from '../../types/offer';
 
 function OfferPage() {
   const dispatch = useDispatch<AppDispatch>();
   const offers = useSelector(getOffers);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const userData = useSelector(getUserData);
-  const reviews: Review[] = [
-    {
-      id: 1,
-      userName: 'Max',
-      userAvatarUrl: 'img/avatar-max.jpg',
-      rating: 4,
-      comment: 'A quiet cozy and picturesque that hides behind a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
-      date: '2019-04-24',
-      displayDate: 'April 2019',
-    },
-  ];
+  const currentOffer = useSelector(getCurrentOffer);
+  const nearbyOffers = useSelector(getNearbyOffers);
+  const comments = useSelector(getComments);
+  const isCurrentOfferLoading = useSelector(getIsCurrentOfferLoading);
+  const hasCurrentOfferError = useSelector(getHasCurrentOfferError);
+  const isCommentSubmitting = useSelector(getIsCommentSubmitting);
 
   const { id } = useParams();
-  const currentOffer = offers.find((offerItem) => offerItem.id === id);
   const favoritesCount = offers.filter((offerItem) => offerItem.isFavorite).length;
 
   const handleLogoutClick = () => {
     dispatch(logoutAction());
   };
 
+  const handleCommentSubmit = (commentData: CommentSubmission) => {
+    if (id) {
+      dispatch(submitCommentAction({ offerId: id, comment: commentData }))
+        .then(() => {
+          dispatch(fetchCommentsAction(id));
+        });
+    }
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (!currentOffer) {
+  useEffect(() => {
+    if (id) {
+      dispatch(fetchOfferByIdAction(id));
+      dispatch(fetchNearbyOffersAction(id));
+      dispatch(fetchCommentsAction(id));
+    }
+  }, [id, dispatch]);
+
+  if (isCurrentOfferLoading) {
+    return <Spinner />;
+  }
+
+  if (hasCurrentOfferError || !currentOffer) {
     return <NotFoundPage />;
   }
 
-  const nearOffers = offers.filter((offerItem) => offerItem.id !== currentOffer.id && offerItem.city.name === currentOffer.city.name).slice(0, 3);
-  const nearbyOffersForMap = [currentOffer, ...nearOffers];
+  const nearbyOffersForMap = [currentOffer, ...nearbyOffers];
   const ratingWidth = `${currentOffer.rating * 20}%`;
   const imageCounters: Record<string, number> = {};
   const galleryImages = (currentOffer.images ?? []).map((image) => {
@@ -199,10 +214,12 @@ function OfferPage() {
               )}
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
-                  Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
+                  Reviews &middot; <span className="reviews__amount">{comments.length}</span>
                 </h2>
-                <ReviewList reviews={reviews} />
-                <CommentForm />
+                <ReviewList reviews={comments} />
+                {authorizationStatus === AuthorizationStatus.Auth && (
+                  <CommentForm onSubmit={handleCommentSubmit} isSubmitting={isCommentSubmitting} />
+                )}
               </section>
             </div>
           </div>
@@ -213,7 +230,7 @@ function OfferPage() {
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OfferList offers={nearOffers} block="near-places" />
+            <OfferList offers={nearbyOffers} block="near-places" />
           </section>
         </div>
       </main>

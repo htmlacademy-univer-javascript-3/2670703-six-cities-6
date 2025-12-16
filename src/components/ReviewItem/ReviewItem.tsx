@@ -1,11 +1,13 @@
 type Review = {
   id: number;
-  userName: string;
-  userAvatarUrl: string;
+  user: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
   rating: number;
   comment: string;
   date: string;
-  displayDate: string;
 };
 
 type ReviewItemProps = {
@@ -21,14 +23,14 @@ function ReviewItem({ review }: ReviewItemProps) {
         <div className="reviews__avatar-wrapper user__avatar-wrapper">
           <img
             className="reviews__avatar user__avatar"
-            src={review.userAvatarUrl}
+            src={review.user.avatarUrl}
             width="54"
             height="54"
             alt="Reviews avatar"
           />
         </div>
         <span className="reviews__user-name">
-          {review.userName}
+          {review.user.name}
         </span>
       </div>
       <div className="reviews__info">
@@ -41,7 +43,7 @@ function ReviewItem({ review }: ReviewItemProps) {
         <p className="reviews__text">
           {review.comment}
         </p>
-        <time className="reviews__time" dateTime={review.date}>{review.displayDate}</time>
+        <time className="reviews__time" dateTime={review.date}>{new Date(review.date).toLocaleDateString()}</time>
       </div>
     </li>
   );

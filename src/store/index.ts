@@ -20,9 +20,12 @@ export const store = configureStore({
 
 api.interceptors.response.use(
   (response) => response,
-  (error: { response?: { status?: number } }) => {
+  (error: { response?: { status?: number }; config?: { url?: string } }) => {
     if (error.response?.status === 401) {
       store.dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+      if (error.config?.url?.includes('/login')) {
+        return Promise.reject(error);
+      }
     }
     return Promise.reject(error);
   }

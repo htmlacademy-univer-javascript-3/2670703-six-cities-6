@@ -33,3 +33,8 @@ export type Offer = {
   maxAdults?: number;
   images?: string[];
 };
+
+export type CommentSubmission = {
+  rating: number;
+  comment: string;
+};
