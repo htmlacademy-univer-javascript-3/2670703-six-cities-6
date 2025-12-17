@@ -23,40 +23,7 @@ import { requireAuthorization, setUserData } from './action';
 
 type ThunkDispatch = (action: unknown) => void;
 
-const createMockOffer = (overrides?: Partial<Offer>): Offer => ({
-  id: '1',
-  title: 'Mock Offer',
-  type: 'apartment',
-  price: 100,
-  previewImage: 'img/apartment-01.jpg',
-  city: {
-    name: 'Paris',
-    location: {
-      latitude: 0,
-      longitude: 0,
-      zoom: 10
-    }
-  },
-  location: {
-    latitude: 0,
-    longitude: 0,
-    zoom: 10
-  },
-  isFavorite: false,
-  isPremium: false,
-  rating: 4,
-  description: 'Mock description',
-  bedrooms: 1,
-  goods: [],
-  host: {
-    name: 'Host',
-    avatarUrl: 'img/avatar.jpg',
-    isPro: false
-  },
-  images: [],
-  maxAdults: 2,
-  ...overrides
-});
+import { createMockOffer, createMockUserData } from '../test-utils/mocks';
 
 const createMockReview = (overrides?: Partial<Review>): Review => ({
   id: 1,
@@ -71,13 +38,8 @@ const createMockReview = (overrides?: Partial<Review>): Review => ({
   ...overrides
 });
 
-const createMockAuthInfo = (overrides?: Partial<AuthInfo>): AuthInfo => ({ name: 'User',
-  email: 'user@example.com',
-  avatarUrl: 'img/avatar.jpg',
-  isPro: false,
-  token: 'token',
-  ...overrides
-});
+const createMockAuthInfo = (overrides?: Partial<AuthInfo>): AuthInfo =>
+  createMockUserData(overrides);
 
 const createApiWithMockAdapter = (): { api: AxiosInstance; mockAdapter: MockAdapter } => {
   const api = axios.create();

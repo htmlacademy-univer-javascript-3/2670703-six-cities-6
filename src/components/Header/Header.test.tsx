@@ -3,16 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Header from './Header';
 import { AuthorizationStatus } from '../../const';
-import type { AuthInfo } from '../../types/auth';
-
-const createMockUserData = (overrides?: Partial<AuthInfo>): AuthInfo => ({
-  name: 'User',
-  email: 'user@example.com',
-  avatarUrl: 'img/avatar.jpg',
-  isPro: false,
-  token: 'token',
-  ...overrides
-});
+import { createMockUserData } from '../../test-utils/mocks';
 
 describe('Header component', () => {
   it('should render sign in link when user is not authorized', () => {

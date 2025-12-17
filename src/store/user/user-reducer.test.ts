@@ -6,17 +6,8 @@ import {
   requireAuthorization,
   setUserData
 } from '../action';
-import type { AuthInfo } from '../../types/auth';
+import { createMockUserData } from '../../test-utils/mocks';
 import { AuthorizationStatus } from '../../const';
-
-const createMockUserData = (overrides?: Partial<AuthInfo>): AuthInfo => ({
-  name: 'User',
-  email: 'user@example.com',
-  avatarUrl: 'img/avatar.jpg',
-  isPro: false,
-  token: 'token',
-  ...overrides
-});
 
 const createInitialState = (overrides?: Partial<UserState>): UserState => ({
   authorizationStatus: AuthorizationStatus.Unknown,
