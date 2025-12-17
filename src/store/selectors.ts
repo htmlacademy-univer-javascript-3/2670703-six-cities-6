@@ -1,38 +1,79 @@
+import { createSelector } from '@reduxjs/toolkit';
 import type { State } from './index';
-import { AuthorizationStatus } from '../const';
+import { AuthorizationStatus, SortingType } from '../const';
+import type { Offer } from '../types/offer';
 
-export const getCity = (state: State): string => state.city;
+export const getCity = (state: State): string => state.offers.city;
 
-export const getOffers = (state: State) => state.offers;
+export const getOffers = (state: State): Offer[] => state.offers.offers;
 
-export const getOffersByCity = (state: State) => {
-  const activeCityName = getCity(state);
+export const getSortingType = (state: State): SortingType => state.offers.sortingType;
 
-  return state.offers.filter((offer) => offer.city.name === activeCityName);
-};
+export const getHoveredOfferId = (state: State): string | null => state.offers.hoveredOfferId;
 
-export const getSortingType = (state: State) => state.sortingType;
+export const getIsOffersLoading = (state: State): boolean => state.offers.isOffersLoading;
 
-export const getHoveredOfferId = (state: State) => state.hoveredOfferId;
+export const getHasOffersLoadingError = (state: State): boolean => state.offers.hasOffersLoadingError;
 
-export const getIsOffersLoading = (state: State) => state.isOffersLoading;
+export const getCurrentOffer = (state: State): Offer | null => state.offers.currentOffer;
 
-export const getHasOffersLoadingError = (state: State) => state.hasOffersLoadingError;
+export const getNearbyOffers = (state: State): Offer[] => state.offers.nearbyOffers;
 
-export const getAuthorizationStatus = (state: State): AuthorizationStatus => state.authorizationStatus;
+export const getIsCurrentOfferLoading = (state: State): boolean => state.offers.isCurrentOfferLoading;
 
-export const getUserData = (state: State) => state.userData;
+export const getHasCurrentOfferError = (state: State): boolean => state.offers.hasCurrentOfferError;
 
-export const getCurrentOffer = (state: State) => state.currentOffer;
+export const getAuthorizationStatus = (state: State): AuthorizationStatus => state.user.authorizationStatus;
 
-export const getNearbyOffers = (state: State) => state.nearbyOffers;
+export const getUserData = (state: State) => state.user.userData;
 
-export const getComments = (state: State) => state.comments;
+export const getComments = (state: State) => state.comments.comments;
 
-export const getIsCurrentOfferLoading = (state: State) => state.isCurrentOfferLoading;
+export const getIsCommentsLoading = (state: State): boolean => state.comments.isCommentsLoading;
 
-export const getHasCurrentOfferError = (state: State) => state.hasCurrentOfferError;
+export const getIsCommentSubmitting = (state: State): boolean => state.comments.isCommentSubmitting;
 
-export const getIsCommentsLoading = (state: State) => state.isCommentsLoading;
+export const getOffersByCity = createSelector(
+  [getOffers, getCity],
+  (offers, activeCityName) => offers.filter((offer) => offer.city.name === activeCityName)
+);
 
-export const getIsCommentSubmitting = (state: State) => state.isCommentSubmitting;
+export const getSortedOffers = createSelector(
+  [getOffersByCity, getSortingType],
+  (cityOffers, sortingType) => {
+    const sortedOffers = [...cityOffers];
+
+    switch (sortingType) {
+      case SortingType.PriceLowToHigh:
+        return sortedOffers.sort((firstOffer, secondOffer) => firstOffer.price - secondOffer.price);
+      case SortingType.PriceHighToLow:
+        return sortedOffers.sort((firstOffer, secondOffer) => secondOffer.price - firstOffer.price);
+      case SortingType.TopRatedFirst:
+        return sortedOffers.sort((firstOffer, secondOffer) => secondOffer.rating - firstOffer.rating);
+      case SortingType.Popular:
+      default:
+        return sortedOffers;
+    }
+  }
+);
+
+export const getFavoriteOffers = createSelector(
+  [getOffers],
+  (offers) => offers.filter((offer) => offer.isFavorite)
+);
+
+export const getFavoriteOffersCount = createSelector(
+  [getFavoriteOffers],
+  (favoriteOffers) => favoriteOffers.length
+);
+
+export const getOffersByCityGrouped = createSelector(
+  [getFavoriteOffers],
+  (favoriteOffers) => {
+    const offersByCity: Record<string, Offer[]> = {};
+    favoriteOffers.forEach((offer) => {
+      (offersByCity[offer.city.name] ??= []).push(offer);
+    });
+    return offersByCity;
+  }
+);

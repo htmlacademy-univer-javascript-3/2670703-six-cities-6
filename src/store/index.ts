@@ -1,15 +1,23 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 import type { AxiosInstance } from 'axios';
-import { offersData } from './reducer';
+import { offersReducer } from './offers/offers-reducer';
+import { userReducer } from './user/user-reducer';
+import { commentsReducer } from './comments/comments-reducer';
 import { createApi } from '../services/api';
 import { requireAuthorization } from './action';
 import { AuthorizationStatus } from '../const';
 
 const api = createApi();
 
+const rootReducer = combineReducers({
+  offers: offersReducer,
+  user: userReducer,
+  comments: commentsReducer,
+});
+
 export const store = configureStore({
-  reducer: offersData,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: {

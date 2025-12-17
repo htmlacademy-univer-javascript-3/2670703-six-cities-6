@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import OfferCard from '../OfferCard/OfferCard';
 import type { Offer } from '../../types/offer';
 
@@ -43,4 +44,6 @@ function OfferList({ offers, block = 'cities', onOfferHover, className }: OfferL
   );
 }
 
-export default OfferList;
+const MemoizedOfferList = memo(OfferList);
+
+export default MemoizedOfferList;

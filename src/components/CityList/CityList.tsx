@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import type React from 'react';
 
 type CityListProps = {
@@ -7,13 +8,13 @@ type CityListProps = {
 };
 
 function CityList({ cities, activeCity, onCityChange }: CityListProps) {
-  const handleCityClick = (city: string, evt: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleCityClick = useCallback((city: string, evt: React.MouseEvent<HTMLAnchorElement>) => {
     evt.preventDefault();
 
     if (city !== activeCity) {
       onCityChange(city);
     }
-  };
+  }, [activeCity, onCityChange]);
 
   return (
     <section className="locations container">

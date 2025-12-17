@@ -23,9 +23,7 @@ export const setCurrentOffer = createAction<Offer | null>('offers/setCurrentOffe
 
 export const setNearbyOffers = createAction<Offer[]>('offers/setNearbyOffers');
 
-export const setComments = createAction<Review[]>('offers/setComments');
-
-export const addComment = createAction<Review>('offers/addComment');
+export const setComments = createAction<Review[]>('comments/setComments');
 
 export const fetchOffersAction = createAsyncThunk<Offer[], undefined, {
   state: State;

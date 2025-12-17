@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 type Review = {
   id: number;
   user: {
@@ -50,4 +52,7 @@ function ReviewItem({ review }: ReviewItemProps) {
 }
 
 export type { Review };
-export default ReviewItem;
+
+const MemoizedReviewItem = memo(ReviewItem);
+
+export default MemoizedReviewItem;

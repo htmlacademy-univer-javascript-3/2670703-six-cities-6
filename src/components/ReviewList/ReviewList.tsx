@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import ReviewItem, { Review } from '../ReviewItem/ReviewItem';
 
 type ReviewListProps = {
@@ -15,4 +16,7 @@ function ReviewList({ reviews }: ReviewListProps) {
 }
 
 export type { ReviewListProps };
-export default ReviewList;
+
+const MemoizedReviewList = memo(ReviewList);
+
+export default MemoizedReviewList;
