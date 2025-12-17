@@ -1,5 +1,5 @@
-import { Link, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import OfferList from '../OfferList/OfferList';
@@ -8,14 +8,14 @@ import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import Map from '../Map/Map';
 import ReviewList from '../ReviewList/ReviewList';
 import Spinner from '../Spinner/Spinner';
-import { getOffers, getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting } from '../../store/selectors';
+import Header from '../Header/Header';
+import { getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting, getFavoriteOffersCount } from '../../store/selectors';
 import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction } from '../../store/action';
 import { AuthorizationStatus } from '../../const';
 import type { CommentSubmission } from '../../types/offer';
 
 function OfferPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const offers = useSelector(getOffers);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const userData = useSelector(getUserData);
   const currentOffer = useSelector(getCurrentOffer);
@@ -24,22 +24,22 @@ function OfferPage() {
   const isCurrentOfferLoading = useSelector(getIsCurrentOfferLoading);
   const hasCurrentOfferError = useSelector(getHasCurrentOfferError);
   const isCommentSubmitting = useSelector(getIsCommentSubmitting);
+  const favoritesCount = useSelector(getFavoriteOffersCount);
 
   const { id } = useParams();
-  const favoritesCount = offers.filter((offerItem) => offerItem.isFavorite).length;
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = useCallback(() => {
     dispatch(logoutAction());
-  };
+  }, [dispatch]);
 
-  const handleCommentSubmit = (commentData: CommentSubmission) => {
+  const handleCommentSubmit = useCallback((commentData: CommentSubmission) => {
     if (id) {
       dispatch(submitCommentAction({ offerId: id, comment: commentData }))
         .then(() => {
           dispatch(fetchCommentsAction(id));
         });
     }
-  };
+  }, [dispatch, id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -53,6 +53,35 @@ function OfferPage() {
     }
   }, [id, dispatch]);
 
+  const nearbyOffersForMap = useMemo(() => {
+    if (!currentOffer) {
+      return nearbyOffers;
+    }
+    return [currentOffer, ...nearbyOffers];
+  }, [currentOffer, nearbyOffers]);
+
+  const ratingWidth = useMemo(() => {
+    if (!currentOffer) {
+      return '0%';
+    }
+    return `${currentOffer.rating * 20}%`;
+  }, [currentOffer]);
+
+  const galleryImages = useMemo(() => {
+    if (!currentOffer) {
+      return [];
+    }
+    const imageCounters: Record<string, number> = {};
+    return (currentOffer.images ?? []).map((image) => {
+      const nextCount = (imageCounters[image] ?? 0) + 1;
+      imageCounters[image] = nextCount;
+      return {
+        src: image,
+        key: `${currentOffer.id}-${image}-${nextCount}`,
+      };
+    });
+  }, [currentOffer]);
+
   if (isCurrentOfferLoading) {
     return <Spinner />;
   }
@@ -61,66 +90,14 @@ function OfferPage() {
     return <NotFoundPage />;
   }
 
-  const nearbyOffersForMap = [currentOffer, ...nearbyOffers];
-  const ratingWidth = `${currentOffer.rating * 20}%`;
-  const imageCounters: Record<string, number> = {};
-  const galleryImages = (currentOffer.images ?? []).map((image) => {
-    const nextCount = (imageCounters[image] ?? 0) + 1;
-    imageCounters[image] = nextCount;
-    return {
-      src: image,
-      key: `${currentOffer.id}-${image}-${nextCount}`,
-    };
-  });
-
   return (
     <div className="page">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link" to="/">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </Link>
-            </div>
-            <nav className="header__nav">
-              {authorizationStatus === AuthorizationStatus.Auth && userData ? (
-                <ul className="header__nav-list">
-                  <li className="header__nav-item user">
-                    <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                      <div className="header__avatar-wrapper user__avatar-wrapper">
-                        <img className="header__avatar user__avatar" src={userData.avatarUrl} width="20" height="20" alt={userData.name} />
-                      </div>
-                      <span className="header__user-name user__name">{userData.email}</span>
-                      <span className="header__favorite-count">{favoritesCount}</span>
-                    </Link>
-                  </li>
-                  <li className="header__nav-item">
-                    <a
-                      className="header__nav-link"
-                      href="#"
-                      onClick={(evt) => {
-                        evt.preventDefault();
-                        handleLogoutClick();
-                      }}
-                    >
-                      <span className="header__signout">Sign out</span>
-                    </a>
-                  </li>
-                </ul>
-              ) : (
-                <ul className="header__nav-list">
-                  <li className="header__nav-item">
-                    <Link className="header__nav-link" to="/login">
-                      <span className="header__login">Sign in</span>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header
+        authorizationStatus={authorizationStatus}
+        userData={userData}
+        favoriteCount={favoritesCount}
+        onLogoutClick={handleLogoutClick}
+      />
 
       <main className="page__main page__main--offer">
         <section className="offer">

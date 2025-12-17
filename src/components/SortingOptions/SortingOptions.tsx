@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { SortingType } from '../../const';
 
 type SortingOptionsProps = {
@@ -16,14 +16,16 @@ const sortingOptions: SortingType[] = [
 function SortingOptions({ currentSortingType, onSortingTypeChange }: SortingOptionsProps) {
   const [isOpened, setIsOpened] = useState(false);
 
-  const handleToggleClick = () => {
+  const handleToggleClick = useCallback(() => {
     setIsOpened((prevState) => !prevState);
-  };
+  }, []);
 
-  const handleOptionClick = (sortingType: SortingType) => {
+  const handleOptionClick = useCallback((sortingType: SortingType) => {
     onSortingTypeChange(sortingType);
     setIsOpened(false);
-  };
+  }, [onSortingTypeChange]);
+
+  const memoizedSortingOptions = useMemo(() => sortingOptions, []);
 
   return (
     <form className="places__sorting" action="#" method="get">
@@ -35,7 +37,7 @@ function SortingOptions({ currentSortingType, onSortingTypeChange }: SortingOpti
         </svg>
       </span>
       <ul className={`places__options places__options--custom ${isOpened ? 'places__options--opened' : ''}`}>
-        {sortingOptions.map((sortingType) => (
+        {memoizedSortingOptions.map((sortingType) => (
           <li
             key={sortingType}
             className={`places__option ${sortingType === currentSortingType ? 'places__option--active' : ''}`}

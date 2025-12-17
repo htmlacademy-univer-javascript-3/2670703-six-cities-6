@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import L, { Icon, LayerGroup, Map as LeafletMap } from 'leaflet';
 import type { City, Offer } from '../../types/offer';
 
@@ -26,21 +26,27 @@ function Map({ city, offers, activeOfferId }: MapProps) {
   const mapRef = useRef<LeafletMap | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
+  const cityLocation = useMemo(() => ({
+    lat: city.location.latitude,
+    lng: city.location.longitude,
+    zoom: city.location.zoom ?? DEFAULT_ZOOM,
+  }), [city.location.latitude, city.location.longitude, city.location.zoom]);
+
   useEffect(() => {
     if (mapContainerRef.current !== null && mapRef.current === null) {
       mapRef.current = L.map(mapContainerRef.current, {
         center: {
-          lat: city.location.latitude,
-          lng: city.location.longitude,
+          lat: cityLocation.lat,
+          lng: cityLocation.lng,
         },
-        zoom: city.location.zoom ?? DEFAULT_ZOOM,
+        zoom: cityLocation.zoom,
       });
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mapRef.current);
     }
-  }, [city]);
+  }, [cityLocation]);
 
   useEffect(() => {
     if (mapRef.current === null) {
@@ -75,12 +81,12 @@ function Map({ city, offers, activeOfferId }: MapProps) {
 
     mapRef.current.setView(
       {
-        lat: city.location.latitude,
-        lng: city.location.longitude,
+        lat: cityLocation.lat,
+        lng: cityLocation.lng,
       },
-      city.location.zoom ?? DEFAULT_ZOOM
+      cityLocation.zoom
     );
-  }, [city]);
+  }, [cityLocation]);
 
   return <div ref={mapContainerRef} style={{ height: '100%' }} />;
 }

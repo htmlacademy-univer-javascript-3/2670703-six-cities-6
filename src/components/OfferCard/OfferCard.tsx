@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link } from 'react-router-dom';
 import type { Offer } from '../../types/offer';
 
@@ -76,4 +77,6 @@ function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: Offe
   );
 }
 
-export default OfferCard;
+const MemoizedOfferCard = memo(OfferCard);
+
+export default MemoizedOfferCard;
