@@ -1,6 +1,11 @@
-import { memo } from 'react';
-import { Link } from 'react-router-dom';
+import { memo, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import type { Offer } from '../../types/offer';
+import type { AppDispatch } from '../../store';
+import { getAuthorizationStatus } from '../../store/selectors';
+import { toggleFavoriteStatusAction } from '../../store/action';
+import { AuthorizationStatus } from '../../const';
 
 type OfferCardProps = {
   offer: Offer;
@@ -11,6 +16,9 @@ type OfferCardProps = {
 
 function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: OfferCardProps) {
   const { id, title, price, type, previewImage, isPremium, isFavorite, rating } = offer;
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const authorizationStatus = useSelector(getAuthorizationStatus);
   const ratingWidth = `${rating * 20}%`;
   const blockCardClasses: Record<NonNullable<OfferCardProps['block']>, string> = {
     cities: 'cities__card',
@@ -26,6 +34,14 @@ function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: Offe
   const imageWrapperClassName = `${blockImageWrapperClasses[block]} place-card__image-wrapper`;
   const infoClassName = block === 'favorites' ? 'favorites__card-info place-card__info' : 'place-card__info';
   const imageSize = block === 'favorites' ? { width: 150, height: 110 } : { width: 260, height: 200 };
+
+  const handleBookmarkClick = useCallback(() => {
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate('/login');
+      return;
+    }
+    dispatch(toggleFavoriteStatusAction({ offerId: id, isFavorite: !isFavorite }));
+  }, [authorizationStatus, dispatch, id, isFavorite, navigate]);
 
   const handleMouseEnter = () => {
     if (onMouseEnter) {
@@ -55,7 +71,11 @@ function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: Offe
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`} type="button">
+          <button
+            className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`}
+            type="button"
+            onClick={handleBookmarkClick}
+          >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
             </svg>

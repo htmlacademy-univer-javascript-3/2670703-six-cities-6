@@ -25,6 +25,10 @@ export const setNearbyOffers = createAction<Offer[]>('offers/setNearbyOffers');
 
 export const setComments = createAction<Review[]>('comments/setComments');
 
+export const updateOfferFavoriteStatus = createAction<Offer>('offers/updateOfferFavoriteStatus');
+
+export const setFavoriteOffers = createAction<Offer[]>('offers/setFavoriteOffers');
+
 export const fetchOffersAction = createAsyncThunk<Offer[], undefined, {
   state: State;
   extra: AxiosInstance;
@@ -131,6 +135,29 @@ export const submitCommentAction = createAsyncThunk<Review, { offerId: string; c
   'offers/submitComment',
   async ({ offerId, comment }, { extra: api }) => {
     const { data } = await api.post<Review>(`/comments/${offerId}`, comment);
+    return data;
+  }
+);
+
+export const toggleFavoriteStatusAction = createAsyncThunk<Offer, { offerId: string; isFavorite: boolean }, {
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'offers/toggleFavoriteStatus',
+  async ({ offerId, isFavorite }, { extra: api }) => {
+    const status = isFavorite ? 1 : 0;
+    const { data } = await api.post<Offer>(`/favorite/${offerId}/${status}`);
+    return data;
+  }
+);
+
+export const fetchFavoriteOffersAction = createAsyncThunk<Offer[], undefined, {
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'offers/fetchFavoriteOffers',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<Offer[]>('/favorite');
     return data;
   }
 );

@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
-import { useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import OfferList from '../OfferList/OfferList';
 import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
 import Header from '../Header/Header';
 import { getFavoriteOffers, getOffersByCityGrouped, getAuthorizationStatus, getUserData } from '../../store/selectors';
-import { logoutAction } from '../../store/action';
+import { logoutAction, fetchFavoriteOffersAction } from '../../store/action';
 
 function FavoritesPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,6 +14,10 @@ function FavoritesPage() {
   const offersByCity = useSelector(getOffersByCityGrouped);
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const userData = useSelector(getUserData);
+
+  useEffect(() => {
+    dispatch(fetchFavoriteOffersAction());
+  }, [dispatch]);
 
   const handleLogoutClick = useCallback(() => {
     dispatch(logoutAction());
