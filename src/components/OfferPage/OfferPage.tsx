@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
@@ -10,12 +10,13 @@ import ReviewList from '../ReviewList/ReviewList';
 import Spinner from '../Spinner/Spinner';
 import Header from '../Header/Header';
 import { getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting, getFavoriteOffersCount } from '../../store/selectors';
-import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction } from '../../store/action';
+import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction, toggleFavoriteStatusAction } from '../../store/action';
 import { AuthorizationStatus } from '../../const';
 import type { CommentSubmission } from '../../types/offer';
 
 function OfferPage() {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const userData = useSelector(getUserData);
   const currentOffer = useSelector(getCurrentOffer);
@@ -31,6 +32,17 @@ function OfferPage() {
   const handleLogoutClick = useCallback(() => {
     dispatch(logoutAction());
   }, [dispatch]);
+
+  const handleFavoriteClick = useCallback(() => {
+    if (!id || !currentOffer) {
+      return;
+    }
+    if (authorizationStatus !== AuthorizationStatus.Auth) {
+      navigate('/login');
+      return;
+    }
+    dispatch(toggleFavoriteStatusAction({ offerId: id, isFavorite: !currentOffer.isFavorite }));
+  }, [authorizationStatus, currentOffer, dispatch, id, navigate]);
 
   const handleCommentSubmit = useCallback((commentData: CommentSubmission) => {
     if (id) {
@@ -121,7 +133,11 @@ function OfferPage() {
                 <h1 className="offer__name">
                   {currentOffer.title}
                 </h1>
-                <button className={`offer__bookmark-button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''} button`} type="button">
+                <button
+                  className={`offer__bookmark-button ${currentOffer.isFavorite ? 'offer__bookmark-button--active' : ''} button`}
+                  type="button"
+                  onClick={handleFavoriteClick}
+                >
                   <svg className="offer__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>

@@ -1,7 +1,7 @@
 import { createReducer, isAnyOf, type PayloadAction } from '@reduxjs/toolkit';
 import type { Offer } from '../../types/offer';
 import { SortingType } from '../../const';
-import { changeCity, changeSortingType, fetchOffersAction, loadOffers, setHoveredOfferId, setCurrentOffer, setNearbyOffers, fetchOfferByIdAction, fetchNearbyOffersAction } from '../action';
+import { changeCity, changeSortingType, fetchOffersAction, loadOffers, setHoveredOfferId, setCurrentOffer, setNearbyOffers, fetchOfferByIdAction, fetchNearbyOffersAction, updateOfferFavoriteStatus, fetchFavoriteOffersAction, setFavoriteOffers, toggleFavoriteStatusAction } from '../action';
 
 export type OffersState = {
   city: string;
@@ -29,6 +29,36 @@ const initialState: OffersState = {
   hasCurrentOfferError: false,
 };
 
+const applyUpdatedOffer = (state: OffersState, updatedOffer: Offer): void => {
+  state.offers = state.offers.map((offer) => offer.id === updatedOffer.id ? updatedOffer : offer);
+
+  if (state.currentOffer && state.currentOffer.id === updatedOffer.id) {
+    state.currentOffer = updatedOffer;
+  }
+
+  state.nearbyOffers = state.nearbyOffers.map((offer) =>
+    offer.id === updatedOffer.id ? updatedOffer : offer
+  );
+};
+
+const applyFavoriteOffers = (state: OffersState, favoriteOffers: Offer[]): void => {
+  const offersMap = new Map(state.offers.map((offer) => [offer.id, offer]));
+
+  favoriteOffers.forEach((favoriteOffer) => {
+    offersMap.set(favoriteOffer.id, favoriteOffer);
+  });
+
+  state.offers = Array.from(offersMap.values());
+
+  if (state.currentOffer && offersMap.has(state.currentOffer.id)) {
+    state.currentOffer = offersMap.get(state.currentOffer.id) ?? state.currentOffer;
+  }
+
+  state.nearbyOffers = state.nearbyOffers.map((offer) =>
+    offersMap.has(offer.id) ? offersMap.get(offer.id) ?? offer : offer
+  );
+};
+
 export const offersReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(changeCity, (state, action: PayloadAction<string>) => {
@@ -48,6 +78,12 @@ export const offersReducer = createReducer(initialState, (builder) => {
     })
     .addCase(setNearbyOffers, (state, action: PayloadAction<Offer[]>) => {
       state.nearbyOffers = action.payload;
+    })
+    .addCase(updateOfferFavoriteStatus, (state, action: PayloadAction<Offer>) => {
+      applyUpdatedOffer(state, action.payload);
+    })
+    .addCase(setFavoriteOffers, (state, action: PayloadAction<Offer[]>) => {
+      applyFavoriteOffers(state, action.payload);
     })
     .addMatcher(isAnyOf(fetchOffersAction.pending), (state) => {
       state.isOffersLoading = true;
@@ -76,6 +112,12 @@ export const offersReducer = createReducer(initialState, (builder) => {
     })
     .addMatcher(isAnyOf(fetchNearbyOffersAction.fulfilled), (state, action: PayloadAction<Offer[]>) => {
       state.nearbyOffers = action.payload;
+    })
+    .addMatcher(isAnyOf(toggleFavoriteStatusAction.fulfilled), (state, action: PayloadAction<Offer>) => {
+      applyUpdatedOffer(state, action.payload);
+    })
+    .addMatcher(isAnyOf(fetchFavoriteOffersAction.fulfilled), (state, action: PayloadAction<Offer[]>) => {
+      applyFavoriteOffers(state, action.payload);
     });
 });
 

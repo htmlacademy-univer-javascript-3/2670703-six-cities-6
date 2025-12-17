@@ -1,121 +1,30 @@
-import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import type { AppDispatch } from '../../store';
-import { getOffers, getAuthorizationStatus, getUserData } from '../../store/selectors';
-import { logoutAction } from '../../store/action';
-import { AuthorizationStatus } from '../../const';
+import CityList from '../CityList/CityList';
 
-function MainEmptyPage() {
-  const dispatch = useDispatch<AppDispatch>();
-  const offers = useSelector(getOffers);
-  const authorizationStatus = useSelector(getAuthorizationStatus);
-  const userData = useSelector(getUserData);
-  const favoriteOffersCount = offers.filter((offer) => offer.isFavorite).length;
+type MainEmptyPageProps = {
+  activeCity: string;
+  cities: readonly string[];
+  onCityChange: (cityName: string) => void;
+};
 
-  const handleLogoutClick = () => {
-    dispatch(logoutAction());
-  };
-
+function MainEmptyPage({ activeCity, cities, onCityChange }: MainEmptyPageProps) {
   return (
-    <div className="page page--gray page--main">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <a className="header__logo-link header__logo-link--active">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </a>
+    <main className="page__main page__main--index page__main--index-empty">
+      <h1 className="visually-hidden">Cities</h1>
+      <div className="tabs">
+        <CityList cities={cities} activeCity={activeCity} onCityChange={onCityChange} />
+      </div>
+      <div className="cities">
+        <div className="cities__places-container cities__places-container--empty container">
+          <section className="cities__no-places">
+            <div className="cities__status-wrapper tabs__content">
+              <b className="cities__status">No places to stay available</b>
+              <p className="cities__status-description">We could not find any property available at the moment in {activeCity}</p>
             </div>
-            <nav className="header__nav">
-              {authorizationStatus === AuthorizationStatus.Auth && userData ? (
-                <ul className="header__nav-list">
-                  <li className="header__nav-item user">
-                    <Link className="header__nav-link header__nav-link--profile" to="/favorites">
-                      <div className="header__avatar-wrapper user__avatar-wrapper">
-                        <img className="header__avatar user__avatar" src={userData.avatarUrl} width="20" height="20" alt={userData.name} />
-                      </div>
-                      <span className="header__user-name user__name">{userData.email}</span>
-                      <span className="header__favorite-count">{favoriteOffersCount}</span>
-                    </Link>
-                  </li>
-                  <li className="header__nav-item">
-                    <a
-                      className="header__nav-link"
-                      href="#"
-                      onClick={(evt) => {
-                        evt.preventDefault();
-                        handleLogoutClick();
-                      }}
-                    >
-                      <span className="header__signout">Sign out</span>
-                    </a>
-                  </li>
-                </ul>
-              ) : (
-                <ul className="header__nav-list">
-                  <li className="header__nav-item">
-                    <Link className="header__nav-link" to="/login">
-                      <span className="header__login">Sign in</span>
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      <main className="page__main page__main--index page__main--index-empty">
-        <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
           </section>
+          <div className="cities__right-section"></div>
         </div>
-        <div className="cities">
-          <div className="cities__places-container cities__places-container--empty container">
-            <section className="cities__no-places">
-              <div className="cities__status-wrapper tabs__content">
-                <b className="cities__status">No places to stay available</b>
-                <p className="cities__status-description">We could not find any property available at the moment in Dusseldorf</p>
-              </div>
-            </section>
-            <div className="cities__right-section"></div>
-          </div>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
 
