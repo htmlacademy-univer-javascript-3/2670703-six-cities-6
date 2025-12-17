@@ -15,5 +15,3 @@ describe('Spinner component', () => {
     expect(screen.getByText('Please wait')).toBeInTheDocument();
   });
 });
-
-

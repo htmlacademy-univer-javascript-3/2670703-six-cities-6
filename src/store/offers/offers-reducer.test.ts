@@ -17,41 +17,7 @@ import {
 } from '../action';
 import { SortingType } from '../../const';
 import type { Offer } from '../../types/offer';
-
-const createMockOffer = (overrides?: Partial<Offer>): Offer => ({
-  id: '1',
-  title: 'Mock Offer',
-  type: 'apartment',
-  price: 100,
-  previewImage: 'img/apartment-01.jpg',
-  city: {
-    name: 'Paris',
-    location: {
-      latitude: 0,
-      longitude: 0,
-      zoom: 10
-    }
-  },
-  location: {
-    latitude: 0,
-    longitude: 0,
-    zoom: 10
-  },
-  isFavorite: false,
-  isPremium: false,
-  rating: 4,
-  description: 'Mock description',
-  bedrooms: 1,
-  goods: [],
-  host: {
-    name: 'Host',
-    avatarUrl: 'img/avatar.jpg',
-    isPro: false
-  },
-  images: [],
-  maxAdults: 2,
-  ...overrides
-});
+import { createMockOffer } from '../../test-utils/mocks';
 
 const createInitialState = (overrides?: Partial<OffersState>): OffersState => ({
   city: 'Paris',
@@ -305,5 +271,3 @@ describe('offersReducer', () => {
     expect(state.nearbyOffers[0].isFavorite).toBe(true);
   });
 });
-
-

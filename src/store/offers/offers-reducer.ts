@@ -120,4 +120,3 @@ export const offersReducer = createReducer(initialState, (builder) => {
       applyFavoriteOffers(state, action.payload);
     });
 });
-

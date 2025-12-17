@@ -18,5 +18,3 @@ describe('MainEmptyPage component', () => {
     expect(screen.getByText('We could not find any property available at the moment in Paris')).toBeInTheDocument();
   });
 });
-
-

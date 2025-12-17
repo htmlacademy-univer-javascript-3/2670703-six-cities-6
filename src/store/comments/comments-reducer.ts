@@ -40,4 +40,3 @@ export const commentsReducer = createReducer(initialState, (builder) => {
       state.isCommentSubmitting = false;
     });
 });
-
