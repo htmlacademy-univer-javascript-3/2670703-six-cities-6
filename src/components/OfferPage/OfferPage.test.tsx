@@ -99,5 +99,3 @@ describe('OfferPage component', () => {
     expect(screen.getByText('Test offer')).toBeInTheDocument();
   });
 });
-
-

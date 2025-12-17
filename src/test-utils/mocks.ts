@@ -1,5 +1,6 @@
 import type { City, Offer } from '../types/offer';
 import type { AuthInfo } from '../types/auth';
+import type { Review } from '../components/ReviewItem/ReviewItem';
 
 export const createMockCity = (overrides?: Partial<City>): City => {
   const location = {
@@ -45,4 +46,15 @@ export const createMockUserData = (overrides?: Partial<AuthInfo>): AuthInfo => (
   ...overrides
 });
 
-
+export const createMockReview = (overrides?: Partial<Review>): Review => ({
+  id: 1,
+  user: {
+    name: 'User',
+    avatarUrl: 'img/avatar.jpg',
+    isPro: false
+  },
+  rating: 4,
+  comment: 'Mock comment',
+  date: '2020-01-01T00:00:00.000Z',
+  ...overrides
+});

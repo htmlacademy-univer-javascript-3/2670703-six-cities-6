@@ -53,5 +53,3 @@ function SortingOptions({ currentSortingType, onSortingTypeChange }: SortingOpti
 }
 
 export default SortingOptions;
-
-

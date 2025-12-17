@@ -11,5 +11,3 @@ describe('NotFoundPage component', () => {
     expect(screen.getByText('Go to main page')).toBeInTheDocument();
   });
 });
-
-

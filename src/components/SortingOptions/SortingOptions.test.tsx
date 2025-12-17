@@ -54,5 +54,3 @@ describe('SortingOptions component', () => {
     expect(optionsList.className).not.toContain('places__options--opened');
   });
 });
-
-

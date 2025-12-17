@@ -99,5 +99,3 @@ describe('LoginPage component', () => {
     expect(navigateMock).toHaveBeenCalledWith('/');
   });
 });
-
-

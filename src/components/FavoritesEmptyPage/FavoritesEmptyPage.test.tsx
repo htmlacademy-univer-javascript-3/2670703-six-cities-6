@@ -11,6 +11,7 @@ import { commentsReducer } from '../../store/comments/comments-reducer';
 import type { State } from '../../store';
 import { AuthorizationStatus } from '../../const';
 import { logoutAction } from '../../store/action';
+import { createMockUserData } from '../../test-utils/mocks';
 
 vi.mock('../../store/action', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../../store/action')>();
@@ -57,14 +58,7 @@ describe('FavoritesEmptyPage component', () => {
     const store = createMockStore({
       user: {
         authorizationStatus: AuthorizationStatus.Auth,
-        userData: {
-          id: 1,
-          name: 'User',
-          email: 'user@example.com',
-          avatarUrl: 'img/avatar.jpg',
-          isPro: false,
-          token: 'token'
-        }
+        userData: createMockUserData()
       }
     } as Partial<State>);
 
@@ -85,14 +79,7 @@ describe('FavoritesEmptyPage component', () => {
     const store = createMockStore({
       user: {
         authorizationStatus: AuthorizationStatus.Auth,
-        userData: {
-          id: 1,
-          name: 'User',
-          email: 'user@example.com',
-          avatarUrl: 'img/avatar.jpg',
-          isPro: false,
-          token: 'token'
-        }
+        userData: createMockUserData()
       }
     } as Partial<State>);
 
@@ -109,5 +96,3 @@ describe('FavoritesEmptyPage component', () => {
     expect(logoutAction).toHaveBeenCalledTimes(1);
   });
 });
-
-

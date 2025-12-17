@@ -77,5 +77,3 @@ describe('CommentForm component', () => {
     expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled();
   });
 });
-
-

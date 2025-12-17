@@ -28,4 +28,3 @@ export const userReducer = createReducer(initialState, (builder) => {
       state.authorizationStatus = AuthorizationStatus.NoAuth;
     });
 });
-

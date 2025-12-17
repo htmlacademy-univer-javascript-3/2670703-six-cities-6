@@ -47,5 +47,3 @@ describe('OfferList component', () => {
     expect(handleOfferHover).toHaveBeenLastCalledWith(null);
   });
 });
-
-

@@ -25,18 +25,7 @@ type ThunkDispatch = (action: unknown) => void;
 
 import { createMockOffer, createMockUserData } from '../test-utils/mocks';
 
-const createMockReview = (overrides?: Partial<Review>): Review => ({
-  id: 1,
-  user: {
-    name: 'User',
-    avatarUrl: 'img/avatar.jpg',
-    isPro: false
-  },
-  rating: 4,
-  comment: 'Mock comment',
-  date: '2020-01-01T00:00:00.000Z',
-  ...overrides
-});
+import { createMockReview } from '../test-utils/mocks';
 
 const createMockAuthInfo = (overrides?: Partial<AuthInfo>): AuthInfo =>
   createMockUserData(overrides);
@@ -266,5 +255,3 @@ describe('async actions', () => {
     expect(hasResetUserDataAction).toBe(true);
   });
 });
-
-

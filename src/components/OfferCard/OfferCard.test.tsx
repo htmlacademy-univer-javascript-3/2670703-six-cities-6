@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import OfferCard from './OfferCard';
-import { createMockOffer } from '../../test-utils/mocks';
+import { createMockOffer, createMockUserData } from '../../test-utils/mocks';
 import { AuthorizationStatus } from '../../const';
 import { toggleFavoriteStatusAction } from '../../store/action';
 
@@ -59,14 +59,7 @@ describe('OfferCard component', () => {
     const store = createMockStore({
       user: {
         authorizationStatus: AuthorizationStatus.Auth,
-        userData: {
-          id: 1,
-          name: 'User',
-          email: 'user@example.com',
-          avatarUrl: 'img/avatar.jpg',
-          isPro: false,
-          token: 'token'
-        }
+        userData: createMockUserData()
       }
     });
 
@@ -112,5 +105,3 @@ describe('OfferCard component', () => {
     expect(handleMouseEnter).toHaveBeenCalledWith('1');
   });
 });
-
-

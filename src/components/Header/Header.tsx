@@ -62,4 +62,3 @@ function Header({ authorizationStatus, userData, favoriteCount, onLogoutClick, i
 }
 
 export default Header;
-

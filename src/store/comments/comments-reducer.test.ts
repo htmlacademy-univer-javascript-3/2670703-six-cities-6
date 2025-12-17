@@ -6,19 +6,7 @@ import {
   submitCommentAction
 } from '../action';
 import type { Review } from '../../components/ReviewItem/ReviewItem';
-
-const createMockReview = (overrides?: Partial<Review>): Review => ({
-  id: 1,
-  user: {
-    name: 'User',
-    avatarUrl: 'img/avatar.jpg',
-    isPro: false
-  },
-  rating: 4,
-  comment: 'Mock comment',
-  date: '2020-01-01T00:00:00.000Z',
-  ...overrides
-});
+import { createMockReview } from '../../test-utils/mocks';
 
 const createInitialState = (overrides?: Partial<CommentsState>): CommentsState => ({
   comments: [],
@@ -109,5 +97,3 @@ describe('commentsReducer', () => {
     expect(state.isCommentSubmitting).toBe(false);
   });
 });
-
-

@@ -47,5 +47,3 @@ describe('Map component', () => {
     expect(container.firstChild).toBeInstanceOf(HTMLDivElement);
   });
 });
-
-

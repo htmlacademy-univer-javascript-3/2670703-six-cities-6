@@ -40,5 +40,3 @@ describe('Header component', () => {
     expect(screen.getByAltText('6 cities logo')).toBeInTheDocument();
   });
 });
-
-

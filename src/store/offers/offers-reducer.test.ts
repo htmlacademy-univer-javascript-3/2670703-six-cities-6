@@ -271,5 +271,3 @@ describe('offersReducer', () => {
     expect(state.nearbyOffers[0].isFavorite).toBe(true);
   });
 });
-
-

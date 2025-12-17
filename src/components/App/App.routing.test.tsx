@@ -9,6 +9,7 @@ import { userReducer } from '../../store/user/user-reducer';
 import { commentsReducer } from '../../store/comments/comments-reducer';
 import type { State } from '../../store';
 import { AuthorizationStatus } from '../../const';
+import { createMockUserData } from '../../test-utils/mocks';
 
 const createMockStore = (preloadedState: Partial<State>) =>
   configureStore({
@@ -92,14 +93,7 @@ describe('App routing', () => {
     const store = createMockStore({
       user: {
         authorizationStatus: AuthorizationStatus.Auth,
-        userData: {
-          id: 1,
-          name: 'User',
-          email: 'user@example.com',
-          avatarUrl: 'img/avatar.jpg',
-          isPro: false,
-          token: 'token'
-        }
+        userData: createMockUserData()
       }
     } as Partial<State>);
 
@@ -133,5 +127,3 @@ describe('App routing', () => {
     expect(screen.getByText('404 Not Found')).toBeInTheDocument();
   });
 });
-
-

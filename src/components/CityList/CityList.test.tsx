@@ -57,5 +57,3 @@ describe('CityList component', () => {
     expect(handleCityChange).not.toHaveBeenCalled();
   });
 });
-
-

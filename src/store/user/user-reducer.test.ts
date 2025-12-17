@@ -68,5 +68,3 @@ describe('userReducer', () => {
     expect(state.authorizationStatus).toBe(AuthorizationStatus.NoAuth);
   });
 });
-
-
