@@ -5,7 +5,7 @@ import OfferList from './offer-list';
 import type { Offer } from '../../types/offer';
 import { createMockOffer } from '../../test-utils/mocks';
 
-vi.mock('../OfferCard/OfferCard', () => ({
+vi.mock('../offer-card/offer-card', () => ({
   __esModule: true,
   default: ({ offer, onMouseEnter, onMouseLeave }: { offer: Offer; onMouseEnter?: (offerId: string) => void; onMouseLeave?: () => void }) => (
     <div
