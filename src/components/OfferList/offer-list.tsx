@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import OfferCard from '../OfferCard/OfferCard';
+import OfferCard from '../OfferCard/offer-card';
 import type { Offer } from '../../types/offer';
 
 type OfferListProps = {

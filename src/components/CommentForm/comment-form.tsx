@@ -11,7 +11,9 @@ function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
   const [comment, setComment] = useState('');
   const previousSubmittingRef = useRef(isSubmitting);
   const ratingOptions = [5, 4, 3, 2, 1];
-  const isSubmitDisabled = rating === '' || comment.length < 50 || isSubmitting;
+  const isCommentTooShort = comment.length < 50;
+  const isCommentTooLong = comment.length > 300;
+  const isSubmitDisabled = rating === '' || isCommentTooShort || isCommentTooLong || isSubmitting;
   const ratingTitles: Record<number, string> = {
     5: 'perfect',
     4: 'good',
@@ -60,6 +62,7 @@ function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
               checked={rating === String(ratingOption)}
               type="radio"
               onChange={handleRatingChange}
+              disabled={isSubmitting}
             />
             <label htmlFor={`${ratingOption}-stars`} className="reviews__rating-label form__rating-label" title={ratingTitles[ratingOption]}>
               <svg className="form__star-image" width="37" height="33">
@@ -76,6 +79,7 @@ function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
         placeholder="Tell how was your stay, what you like and what can be improved"
         value={comment}
         onChange={handleCommentChange}
+        disabled={isSubmitting}
       >
       </textarea>
       <div className="reviews__button-wrapper">

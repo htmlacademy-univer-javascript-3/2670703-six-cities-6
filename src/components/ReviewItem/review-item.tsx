@@ -17,7 +17,14 @@ type ReviewItemProps = {
 };
 
 function ReviewItem({ review }: ReviewItemProps) {
-  const ratingWidth = `${review.rating * 20}%`;
+  const roundedRating = Math.round(review.rating);
+  const ratingWidth = `${roundedRating * 20}%`;
+  const reviewDate = new Date(review.date);
+  const formattedDate = reviewDate.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric'
+  });
+  const machineDate = reviewDate.toISOString().split('T')[0];
 
   return (
     <li className="reviews__item">
@@ -45,7 +52,7 @@ function ReviewItem({ review }: ReviewItemProps) {
         <p className="reviews__text">
           {review.comment}
         </p>
-        <time className="reviews__time" dateTime={review.date}>{new Date(review.date).toLocaleDateString()}</time>
+        <time className="reviews__time" dateTime={machineDate}>{formattedDate}</time>
       </div>
     </li>
   );

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import FavoritesEmptyPage from './FavoritesEmptyPage';
+import FavoritesEmptyPage from './favorites-empty-page';
 import { offersReducer } from '../../store/offers/offers-reducer';
 import { userReducer } from '../../store/user/user-reducer';
 import { commentsReducer } from '../../store/comments/comments-reducer';

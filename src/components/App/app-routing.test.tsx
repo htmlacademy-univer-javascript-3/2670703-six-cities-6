@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import App from './App';
+import App from './app';
 import { offersReducer } from '../../store/offers/offers-reducer';
 import { userReducer } from '../../store/user/user-reducer';
 import { commentsReducer } from '../../store/comments/comments-reducer';
@@ -20,6 +20,25 @@ const createMockStore = (preloadedState: Partial<State>) =>
     },
     preloadedState: preloadedState as State
   });
+
+it('should redirect to main page when authorized user navigates to /login', () => {
+  const store = createMockStore({
+    user: {
+      authorizationStatus: AuthorizationStatus.Auth,
+      userData: createMockUserData()
+    }
+  } as Partial<State>);
+
+  render(
+    <Provider store={store}>
+      <MemoryRouter initialEntries={['/login']}>
+        <App />
+      </MemoryRouter>
+    </Provider>
+  );
+
+  expect(screen.getByText('Cities')).toBeInTheDocument();
+});
 
 describe('App routing', () => {
   it('should render main page when user navigates to root', () => {

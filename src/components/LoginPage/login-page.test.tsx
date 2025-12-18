@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import LoginPage from './LoginPage';
+import LoginPage from './login-page';
+import { AuthorizationStatus, SortingType } from '../../const';
 
 const navigateMock = vi.fn();
 
@@ -27,7 +28,31 @@ vi.mock('react-redux', async (importOriginal) => {
       return {
         unwrap: () => Promise.resolve()
       };
-    }
+    },
+    useSelector: (selector: (state: unknown) => unknown) =>
+      selector({
+        offers: {
+          city: 'Paris',
+          offers: [],
+          sortingType: SortingType.Popular,
+          hoveredOfferId: null,
+          isOffersLoading: false,
+          hasOffersLoadingError: false,
+          currentOffer: null,
+          nearbyOffers: [],
+          isCurrentOfferLoading: false,
+          hasCurrentOfferError: false
+        },
+        user: {
+          authorizationStatus: AuthorizationStatus.NoAuth,
+          userData: null
+        },
+        comments: {
+          comments: [],
+          isCommentsLoading: false,
+          isCommentSubmitting: false
+        }
+      })
   };
 });
 

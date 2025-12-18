@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Header from './Header';
+import Header from './header';
 import { AuthorizationStatus } from '../../const';
 import { createMockUserData } from '../../test-utils/mocks';
 

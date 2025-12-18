@@ -1,19 +1,42 @@
+import type React from 'react';
 import { FormEvent, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import { loginAction } from '../../store/action';
+import { changeCity, loginAction, logoutAction } from '../../store/action';
+import { AuthorizationStatus } from '../../const';
+import { getAuthorizationStatus, getFavoriteOffersCount, getUserData } from '../../store/selectors';
+import Header from '../Header/header';
+
+const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
+
+const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+
+function isPasswordValid(password: string): boolean {
+  return PASSWORD_PATTERN.test(password);
+}
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [randomCity] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * CITIES.length);
+    return CITIES[randomIndex];
+  });
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const authorizationStatus = useSelector(getAuthorizationStatus);
+  const userData = useSelector(getUserData);
+  const favoriteOffersCount = useSelector(getFavoriteOffersCount);
+
+  if (authorizationStatus === AuthorizationStatus.Auth) {
+    return <Navigate to="/" />;
+  }
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    if (password.trim() === '') {
+    if (!isPasswordValid(password)) {
       return;
     }
 
@@ -27,20 +50,22 @@ function LoginPage() {
       });
   };
 
+  const handleRandomCityClick = (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    dispatch(changeCity(randomCity));
+    navigate('/');
+  };
+
   return (
     <div className="page page--gray page--login">
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link" to="/">
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <Header
+        authorizationStatus={authorizationStatus}
+        userData={userData}
+        favoriteCount={favoriteOffersCount}
+        onLogoutClick={() => {
+          dispatch(logoutAction());
+        }}
+      />
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
@@ -75,8 +100,8 @@ function LoginPage() {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to="/">
-                <span>Amsterdam</span>
+              <Link className="locations__item-link" to="/" onClick={handleRandomCityClick}>
+                <span>{randomCity}</span>
               </Link>
             </div>
           </section>

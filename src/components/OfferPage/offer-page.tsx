@@ -2,13 +2,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import OfferList from '../OfferList/OfferList';
-import CommentForm from '../CommentForm/CommentForm';
-import NotFoundPage from '../NotFoundPage/NotFoundPage';
-import Map from '../Map/Map';
-import ReviewList from '../ReviewList/ReviewList';
-import Spinner from '../Spinner/Spinner';
-import Header from '../Header/Header';
+import OfferList from '../OfferList/offer-list';
+import CommentForm from '../CommentForm/comment-form';
+import NotFoundPage from '../NotFoundPage/not-found-page';
+import Map from '../Map/map';
+import ReviewList from '../ReviewList/review-list';
+import Spinner from '../Spinner/spinner';
+import Header from '../Header/header';
 import { getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting, getFavoriteOffersCount } from '../../store/selectors';
 import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction, toggleFavoriteStatusAction } from '../../store/action';
 import { AuthorizationStatus } from '../../const';
@@ -65,18 +65,24 @@ function OfferPage() {
     }
   }, [id, dispatch]);
 
+  const limitedNearbyOffers = useMemo(
+    () => nearbyOffers.slice(0, 3),
+    [nearbyOffers]
+  );
+
   const nearbyOffersForMap = useMemo(() => {
     if (!currentOffer) {
-      return nearbyOffers;
+      return limitedNearbyOffers;
     }
-    return [currentOffer, ...nearbyOffers];
-  }, [currentOffer, nearbyOffers]);
+    return [currentOffer, ...limitedNearbyOffers];
+  }, [currentOffer, limitedNearbyOffers]);
 
   const ratingWidth = useMemo(() => {
     if (!currentOffer) {
       return '0%';
     }
-    return `${currentOffer.rating * 20}%`;
+    const roundedRating = Math.round(currentOffer.rating);
+    return `${roundedRating * 20}%`;
   }, [currentOffer]);
 
   const galleryImages = useMemo(() => {
@@ -115,7 +121,7 @@ function OfferPage() {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {galleryImages.map((imageItem) => (
+              {galleryImages.slice(0, 6).map((imageItem) => (
                 <div className="offer__image-wrapper" key={imageItem.key}>
                   <img className="offer__image" src={imageItem.src} alt={currentOffer.title} />
                 </div>
@@ -153,16 +159,19 @@ function OfferPage() {
               </div>
               <ul className="offer__features">
                 <li className="offer__feature offer__feature--entire">
-                  {currentOffer.type}
+                  {currentOffer.type === 'apartment' && 'Apartment'}
+                  {currentOffer.type === 'room' && 'Room'}
+                  {currentOffer.type === 'house' && 'House'}
+                  {currentOffer.type === 'hotel' && 'Hotel'}
                 </li>
                 {currentOffer.bedrooms !== undefined && (
                   <li className="offer__feature offer__feature--bedrooms">
-                    {currentOffer.bedrooms} Bedrooms
+                    {currentOffer.bedrooms} {currentOffer.bedrooms === 1 ? 'Bedroom' : 'Bedrooms'}
                   </li>
                 )}
                 {currentOffer.maxAdults !== undefined && (
                   <li className="offer__feature offer__feature--adults">
-                    Max {currentOffer.maxAdults} adults
+                    Max {currentOffer.maxAdults} {currentOffer.maxAdults === 1 ? 'adult' : 'adults'}
                   </li>
                 )}
               </ul>
@@ -223,7 +232,7 @@ function OfferPage() {
         <div className="container">
           <section className="near-places places">
             <h2 className="near-places__title">Other places in the neighbourhood</h2>
-            <OfferList offers={nearbyOffers} block="near-places" />
+            <OfferList offers={limitedNearbyOffers} block="near-places" />
           </section>
         </div>
       </main>

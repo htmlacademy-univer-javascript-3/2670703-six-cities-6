@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import MainEmptyPage from './MainEmptyPage';
+import MainEmptyPage from './main-empty-page';
 
 describe('MainEmptyPage component', () => {
   it('should render empty state for active city', () => {

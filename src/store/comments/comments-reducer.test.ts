@@ -5,7 +5,7 @@ import {
   setComments,
   submitCommentAction
 } from '../action';
-import type { Review } from '../../components/ReviewItem/ReviewItem';
+import type { Review } from '../../components/ReviewItem/review-item';
 import { createMockReview } from '../../test-utils/mocks';
 
 const createInitialState = (overrides?: Partial<CommentsState>): CommentsState => ({

@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import OfferList from '../OfferList/OfferList';
-import FavoritesEmptyPage from '../FavoritesEmptyPage/FavoritesEmptyPage';
-import Header from '../Header/Header';
+import OfferList from '../OfferList/offer-list';
+import FavoritesEmptyPage from '../FavoritesEmptyPage/favorites-empty-page';
+import Header from '../Header/header';
 import { getFavoriteOffers, getOffersByCityGrouped, getAuthorizationStatus, getUserData } from '../../store/selectors';
 import { logoutAction, fetchFavoriteOffersAction } from '../../store/action';
 

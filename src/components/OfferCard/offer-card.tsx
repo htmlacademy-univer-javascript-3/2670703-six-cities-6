@@ -19,7 +19,8 @@ function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: Offe
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const authorizationStatus = useSelector(getAuthorizationStatus);
-  const ratingWidth = `${rating * 20}%`;
+  const roundedRating = Math.round(rating);
+  const ratingWidth = `${roundedRating * 20}%`;
   const blockCardClasses: Record<NonNullable<OfferCardProps['block']>, string> = {
     cities: 'cities__card',
     favorites: 'favorites__card',

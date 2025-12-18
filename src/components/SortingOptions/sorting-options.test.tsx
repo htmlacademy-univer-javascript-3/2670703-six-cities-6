@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SortingOptions from './SortingOptions';
+import SortingOptions from './sorting-options';
 import { SortingType } from '../../const';
 
 describe('SortingOptions component', () => {

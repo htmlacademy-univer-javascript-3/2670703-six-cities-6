@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import OfferPage from './OfferPage';
+import OfferPage from './offer-page';
 import { AuthorizationStatus } from '../../const';
 import type { Offer } from '../../types/offer';
 import { createMockCity, createMockOffer } from '../../test-utils/mocks';

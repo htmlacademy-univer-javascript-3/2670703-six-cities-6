@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
-import Map from './Map';
+import Map from './map';
 import type { City, Offer } from '../../types/offer';
 import { createMockCity, createMockOffer } from '../../test-utils/mocks';
 

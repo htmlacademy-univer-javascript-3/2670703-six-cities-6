@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import CommentForm from './CommentForm';
+import CommentForm from './comment-form';
 
 describe('CommentForm component', () => {
   it('should disable submit button when rating or comment is invalid', async () => {

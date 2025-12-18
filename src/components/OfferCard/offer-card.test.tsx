@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import OfferCard from './OfferCard';
+import OfferCard from './offer-card';
 import { createMockOffer, createMockUserData } from '../../test-utils/mocks';
 import { AuthorizationStatus } from '../../const';
 import { toggleFavoriteStatusAction } from '../../store/action';

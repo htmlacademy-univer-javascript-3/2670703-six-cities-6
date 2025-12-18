@@ -1,14 +1,18 @@
 import { memo } from 'react';
-import ReviewItem, { Review } from '../ReviewItem/ReviewItem';
+import ReviewItem, { Review } from '../ReviewItem/review-item';
 
 type ReviewListProps = {
   reviews: Review[];
 };
 
 function ReviewList({ reviews }: ReviewListProps) {
+  const sortedLimitedReviews = [...reviews]
+    .sort((firstReview, secondReview) => new Date(secondReview.date).getTime() - new Date(firstReview.date).getTime())
+    .slice(0, 10);
+
   return (
     <ul className="reviews__list">
-      {reviews.map((review) => (
+      {sortedLimitedReviews.map((review) => (
         <ReviewItem review={review} key={review.id} />
       ))}
     </ul>

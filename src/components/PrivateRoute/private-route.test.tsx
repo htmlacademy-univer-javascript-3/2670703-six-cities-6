@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from './private-route';
 import { offersReducer } from '../../store/offers/offers-reducer';
 import { userReducer } from '../../store/user/user-reducer';
 import { commentsReducer } from '../../store/comments/comments-reducer';
