@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ReviewList from './review-list';
-import type { Review } from '../ReviewItem/review-item';
+import type { Review } from '../review-item/review-item';
 import { createMockReview } from '../../test-utils/mocks';
 
 describe('ReviewList component', () => {

@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import ReviewItem, { Review } from '../ReviewItem/review-item';
+import ReviewItem, { Review } from '../review-item/review-item';
 
 type ReviewListProps = {
   reviews: Review[];

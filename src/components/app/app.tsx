@@ -3,12 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import { checkAuthAction } from '../../store/action';
-import MainPage from '../MainPage/main-page';
-import LoginPage from '../LoginPage/login-page';
-import FavoritesPage from '../FavoritesPage/favorites-page';
-import OfferPage from '../OfferPage/offer-page';
-import NotFoundPage from '../NotFoundPage/not-found-page';
-import PrivateRoute from '../PrivateRoute/private-route';
+import MainPage from '../main-page/main-page';
+import LoginPage from '../login-page/login-page';
+import FavoritesPage from '../favorites-page/favorites-page';
+import OfferPage from '../offer-page/offer-page';
+import NotFoundPage from '../not-found-page/not-found-page';
+import PrivateRoute from '../private-route/private-route';
 
 function App() {
   const dispatch = useDispatch<AppDispatch>();

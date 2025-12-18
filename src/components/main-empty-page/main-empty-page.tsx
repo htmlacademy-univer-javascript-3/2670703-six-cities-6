@@ -1,4 +1,4 @@
-import CityList from '../CityList/city-list';
+import CityList from '../city-list/city-list';
 
 type MainEmptyPageProps = {
   activeCity: string;

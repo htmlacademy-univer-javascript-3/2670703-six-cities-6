@@ -1,6 +1,6 @@
 import type { City, Offer } from '../types/offer';
 import type { AuthInfo } from '../types/auth';
-import type { Review } from '../components/ReviewItem/review-item';
+import type { Review } from '../components/review-item/review-item';
 
 export const createMockCity = (overrides?: Partial<City>): City => {
   const location = {

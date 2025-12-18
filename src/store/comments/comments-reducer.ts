@@ -1,6 +1,6 @@
 import { createReducer, isAnyOf, type PayloadAction } from '@reduxjs/toolkit';
 import { setComments, fetchCommentsAction, submitCommentAction } from '../action';
-import type { Review } from '../../components/ReviewItem/review-item';
+import type { Review } from '../../components/review-item/review-item';
 
 export type CommentsState = {
   comments: Review[];

@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { getAuthorizationStatus } from '../../store/selectors';
 import { AuthorizationStatus } from '../../const';
-import Spinner from '../Spinner/spinner';
+import Spinner from '../spinner/spinner';
 
 type PrivateRouteProps = {
   children: ReactNode;
