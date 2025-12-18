@@ -17,7 +17,7 @@ import {
 import type { State } from './index';
 import type { Offer } from '../types/offer';
 import type { AuthInfo } from '../types/auth';
-import type { Review } from '../components/ReviewItem/ReviewItem';
+import type { Review } from '../components/review-item/review-item';
 import { AuthorizationStatus } from '../const';
 import { requireAuthorization, setUserData } from './action';
 

@@ -5,7 +5,7 @@ import type { AuthInfo } from '../types/auth';
 import type { CommentSubmission } from '../types/offer';
 import { SortingType, AuthorizationStatus } from '../const';
 import type { State } from './index';
-import type { Review } from '../components/ReviewItem/ReviewItem';
+import type { Review } from '../components/review-item/review-item';
 
 export const changeCity = createAction<string>('offers/changeCity');
 
