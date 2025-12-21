@@ -10,9 +10,7 @@ import Header from '../header/header';
 import MainEmptyPage from '../main-empty-page/main-empty-page';
 import { changeCity, changeSortingType, fetchOffersAction, setHoveredOfferId, logoutAction } from '../../store/action';
 import { getCity, getHasOffersLoadingError, getHoveredOfferId, getIsOffersLoading, getOffers, getOffersByCity, getSortingType, getAuthorizationStatus, getUserData, getSortedOffers, getFavoriteOffersCount } from '../../store/selectors';
-import { SortingType } from '../../const';
-
-const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
+import { SortingType, CITIES } from '../../const';
 
 function MainPage() {
   const dispatch = useDispatch<AppDispatch>();

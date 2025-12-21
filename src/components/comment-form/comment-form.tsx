@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, Fragment, useState, useEffect, useRef } from 'react';
 import type { CommentSubmission } from '../../types/offer';
+import { COMMENT_MIN_LENGTH, COMMENT_MAX_LENGTH } from '../../const';
 
 type CommentFormProps = {
   onSubmit: (comment: CommentSubmission) => void;
@@ -11,8 +12,8 @@ function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
   const [comment, setComment] = useState('');
   const previousSubmittingRef = useRef(isSubmitting);
   const ratingOptions = [5, 4, 3, 2, 1];
-  const isCommentTooShort = comment.length < 50;
-  const isCommentTooLong = comment.length > 300;
+  const isCommentTooShort = comment.length < COMMENT_MIN_LENGTH;
+  const isCommentTooLong = comment.length > COMMENT_MAX_LENGTH;
   const isSubmitDisabled = rating === '' || isCommentTooShort || isCommentTooLong || isSubmitting;
   const ratingTitles: Record<number, string> = {
     5: 'perfect',
@@ -84,7 +85,7 @@ function CommentForm({ onSubmit, isSubmitting = false }: CommentFormProps) {
       </textarea>
       <div className="reviews__button-wrapper">
         <p className="reviews__help">
-          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">50 characters</b>.
+          To submit review please make sure to set <span className="reviews__star">rating</span> and describe your stay with at least <b className="reviews__text-amount">{COMMENT_MIN_LENGTH} characters</b>.
         </p>
         <button className="reviews__submit form__submit button" type="submit" disabled={isSubmitDisabled}>
           {isSubmitting ? 'Submitting...' : 'Submit'}

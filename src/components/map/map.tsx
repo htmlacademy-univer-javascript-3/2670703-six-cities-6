@@ -1,14 +1,13 @@
 import { useEffect, useRef, useMemo } from 'react';
 import L, { Icon, LayerGroup, Map as LeafletMap } from 'leaflet';
 import type { City, Offer } from '../../types/offer';
+import { DEFAULT_MAP_ZOOM } from '../../const';
 
 type MapProps = {
   city: City;
   offers: Offer[];
   activeOfferId?: string | null;
 };
-
-const DEFAULT_ZOOM = 12;
 
 const defaultCustomIcon = new Icon({
   iconUrl: 'img/pin.svg',
@@ -29,7 +28,7 @@ function Map({ city, offers, activeOfferId }: MapProps) {
   const cityLocation = useMemo(() => ({
     lat: city.location.latitude,
     lng: city.location.longitude,
-    zoom: city.location.zoom ?? DEFAULT_ZOOM,
+    zoom: city.location.zoom ?? DEFAULT_MAP_ZOOM,
   }), [city.location.latitude, city.location.longitude, city.location.zoom]);
 
   useEffect(() => {

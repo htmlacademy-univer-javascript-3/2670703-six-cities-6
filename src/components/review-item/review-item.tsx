@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { RATING_MULTIPLIER } from '../../const';
 
 type Review = {
   id: number;
@@ -18,7 +19,7 @@ type ReviewItemProps = {
 
 function ReviewItem({ review }: ReviewItemProps) {
   const roundedRating = Math.round(review.rating);
-  const ratingWidth = `${roundedRating * 20}%`;
+  const ratingWidth = `${roundedRating * RATING_MULTIPLIER}%`;
   const reviewDate = new Date(review.date);
   const formattedDate = reviewDate.toLocaleDateString('en-US', {
     month: 'long',

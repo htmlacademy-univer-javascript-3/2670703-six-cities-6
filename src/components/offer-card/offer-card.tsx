@@ -5,7 +5,7 @@ import type { Offer } from '../../types/offer';
 import type { AppDispatch } from '../../store';
 import { getAuthorizationStatus } from '../../store/selectors';
 import { toggleFavoriteStatusAction } from '../../store/action';
-import { AuthorizationStatus } from '../../const';
+import { AuthorizationStatus, RATING_MULTIPLIER } from '../../const';
 
 type OfferCardProps = {
   offer: Offer;
@@ -20,7 +20,7 @@ function OfferCard({ offer, block = 'cities', onMouseEnter, onMouseLeave }: Offe
   const navigate = useNavigate();
   const authorizationStatus = useSelector(getAuthorizationStatus);
   const roundedRating = Math.round(rating);
-  const ratingWidth = `${roundedRating * 20}%`;
+  const ratingWidth = `${roundedRating * RATING_MULTIPLIER}%`;
   const blockCardClasses: Record<NonNullable<OfferCardProps['block']>, string> = {
     cities: 'cities__card',
     favorites: 'favorites__card',
