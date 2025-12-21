@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import { getAuthorizationStatus, getFavoriteOffersCount, getUserData } from '../../store/selectors';
 import { logoutAction } from '../../store/action';
-import Header from '../header/header';
+import Header from '../../components/header/header';
 
 function FavoritesEmptyPage() {
   const dispatch = useDispatch<AppDispatch>();
