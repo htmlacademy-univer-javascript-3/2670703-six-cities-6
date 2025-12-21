@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import { getAuthorizationStatus, getFavoriteOffersCount, getUserData } from '../../store/selectors';
 import { logoutAction } from '../../store/action';
-import Header from '../header/header';
+import Header from '../../components/header/header';
 
 function NotFoundPage() {
   const dispatch = useDispatch<AppDispatch>();

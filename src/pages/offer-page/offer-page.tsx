@@ -2,16 +2,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import OfferList from '../offer-list/offer-list';
-import CommentForm from '../comment-form/comment-form';
+import OfferList from '../../components/offer-list/offer-list';
+import CommentForm from '../../components/comment-form/comment-form';
 import NotFoundPage from '../not-found-page/not-found-page';
-import Map from '../map/map';
-import ReviewList from '../review-list/review-list';
-import Spinner from '../spinner/spinner';
-import Header from '../header/header';
+import Map from '../../components/map/map';
+import ReviewList from '../../components/review-list/review-list';
+import Spinner from '../../components/spinner/spinner';
+import Header from '../../components/header/header';
 import { getAuthorizationStatus, getUserData, getCurrentOffer, getNearbyOffers, getComments, getIsCurrentOfferLoading, getHasCurrentOfferError, getIsCommentSubmitting, getFavoriteOffersCount } from '../../store/selectors';
 import { logoutAction, fetchOfferByIdAction, fetchNearbyOffersAction, fetchCommentsAction, submitCommentAction, toggleFavoriteStatusAction } from '../../store/action';
-import { AuthorizationStatus } from '../../const';
+import { AuthorizationStatus, IMAGE_LIMIT, RATING_MULTIPLIER } from '../../const';
 import type { CommentSubmission } from '../../types/offer';
 
 function OfferPage() {
@@ -82,7 +82,7 @@ function OfferPage() {
       return '0%';
     }
     const roundedRating = Math.round(currentOffer.rating);
-    return `${roundedRating * 20}%`;
+    return `${roundedRating * RATING_MULTIPLIER}%`;
   }, [currentOffer]);
 
   const galleryImages = useMemo(() => {
@@ -121,7 +121,7 @@ function OfferPage() {
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {galleryImages.slice(0, 6).map((imageItem) => (
+              {galleryImages.slice(0, IMAGE_LIMIT).map((imageItem) => (
                 <div className="offer__image-wrapper" key={imageItem.key}>
                   <img className="offer__image" src={imageItem.src} alt={currentOffer.title} />
                 </div>

@@ -4,13 +4,9 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../store';
 import { changeCity, loginAction, logoutAction } from '../../store/action';
-import { AuthorizationStatus } from '../../const';
+import { AuthorizationStatus, CITIES, PASSWORD_PATTERN } from '../../const';
 import { getAuthorizationStatus, getFavoriteOffersCount, getUserData } from '../../store/selectors';
-import Header from '../header/header';
-
-const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
-
-const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).+$/;
+import Header from '../../components/header/header';
 
 function isPasswordValid(password: string): boolean {
   return PASSWORD_PATTERN.test(password);

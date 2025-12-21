@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch } from '../../store';
-import OfferList from '../offer-list/offer-list';
-import Map from '../map/map';
-import CityList from '../city-list/city-list';
-import SortingOptions from '../sorting-options/sorting-options';
-import Spinner from '../spinner/spinner';
-import Header from '../header/header';
+import OfferList from '../../components/offer-list/offer-list';
+import Map from '../../components/map/map';
+import CityList from '../../components/city-list/city-list';
+import SortingOptions from '../../components/sorting-options/sorting-options';
+import Spinner from '../../components/spinner/spinner';
+import Header from '../../components/header/header';
 import MainEmptyPage from '../main-empty-page/main-empty-page';
 import { changeCity, changeSortingType, fetchOffersAction, setHoveredOfferId, logoutAction } from '../../store/action';
 import { getCity, getHasOffersLoadingError, getHoveredOfferId, getIsOffersLoading, getOffers, getOffersByCity, getSortingType, getAuthorizationStatus, getUserData, getSortedOffers, getFavoriteOffersCount } from '../../store/selectors';
-import { SortingType } from '../../const';
-
-const CITIES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
+import { SortingType, CITIES } from '../../const';
 
 function MainPage() {
   const dispatch = useDispatch<AppDispatch>();
